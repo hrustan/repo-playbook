@@ -1,0 +1,52 @@
+# Scheduled job skeleton. The header comment IS the runbook — state here:
+#   - why this cron time (spell out the UTC/local conversion, DST behavior)
+#   - what the job may NOT do (rate limits, external quotas)
+#   - how to re-run a slice by hand (the workflow_dispatch input below)
+# Operational notes that live only in a chat session are lost; put them here.
+#
+# GitHub runners share cloud egress IPs: per-IP rate limits and anti-scrape 403s
+# from third parties are expected operating conditions, not bugs. Route any
+# dispatch input through env, never interpolated into a script (injection hygiene).
+#
+# ESCALATION — data-heavy jobs: when a pull outgrows one runner (multi-GB caches,
+# per-IP rate limits, hours of wall clock), move it into a DEDICATED public data
+# repo instead of growing this job — the pattern in
+# https://github.com/hrustan/edgar-fetch: a `list` job emits a JSON matrix, a
+# fan-out `build` job runs one runner per slice (each runner = a distinct egress
+# IP), a `merge` job tars results into a single artifact with retention-days: 7,
+# and actions/cache with versioned keys makes reruns resumable. The consuming repo
+# downloads the artifact; the bulk data never lands in git or on a laptop.
+name: scheduled-job
+
+on:
+  schedule:
+    - cron: "0 19 * * 1-5" # weekdays 19:00 UTC — adjust and document why
+  workflow_dispatch:
+    inputs:
+      slice:
+        description: "Optional subset to re-run by hand; blank = everything"
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scheduled-job
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Do the work
+        id: work
+        continue-on-error: true
+        env:
+          # Secrets from repo settings; dispatch input routed through env.
+          SLICE: ${{ inputs.slice }}
+        run: echo "replace with the actual job; exit non-zero on failure"
+      - name: Fail the run if the work needs attention
+        if: steps.work.outcome == 'failure'
+        run: exit 1

@@ -1,0 +1,15 @@
+# Python additions — append to the base .gitignore.
+
+# venv and tool caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Cached data artifacts (commit findings, not dumps)
+*.parquet
+
+# Notebooks are jupytext .py only (AGENTS.md); never commit rendered notebooks
+*.ipynb

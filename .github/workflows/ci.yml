@@ -1,0 +1,38 @@
+# This repo's own gate: the bootstrap script must be shellcheck-clean and
+# actually work, and the workflow templates must parse.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck bootstrap.sh
+        run: shellcheck scripts/bootstrap.sh
+      - name: bootstrap dry-run and real run
+        run: |
+          scripts/bootstrap.sh --target /tmp/probe --name "Probe Project" \
+            --one-liner "CI probe." --tier 2 --stack python \
+            --github-user probe --dry-run
+          scripts/bootstrap.sh --target /tmp/probe --name "Probe Project" \
+            --one-liner "CI probe." --tier 2 --stack python --github-user probe
+          # idempotence: second run must skip everything and change nothing
+          scripts/bootstrap.sh --target /tmp/probe --name "Probe Project" \
+            --one-liner "CI probe." --tier 2 --stack python --github-user probe \
+            | grep -q "0 written"
+          # no placeholder may survive a render
+          ! grep -rn "{{" /tmp/probe
+      - name: workflow templates parse
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 - <<'EOF'
+          import glob, sys, yaml
+          for f in glob.glob("templates/github/workflows/*.yml") + [".github/workflows/ci.yml"]:
+              yaml.safe_load(open(f))
+              print("ok", f)
+          EOF

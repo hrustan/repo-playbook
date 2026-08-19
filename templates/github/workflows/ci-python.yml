@@ -1,0 +1,24 @@
+# <!-- proposed: not currently in my repos -->
+# Quality gate: lint + test on every push to main and every PR. Assembles the
+# `make lint` / `make test` targets that existed locally in my Python repos but
+# were never enforced by CI.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest

@@ -1,0 +1,39 @@
+"""Guardrail smoke test: the package imports cleanly, and structural rules from
+AGENTS.md are enforced mechanically. Per AGENTS.md, do not weaken or skip this
+test -- if it blocks you, the code is wrong, not the test.
+"""
+
+import ast
+import importlib
+import pathlib
+
+SRC = pathlib.Path(__file__).resolve().parents[1] / "src" / "{{PROJECT_SLUG}}"
+
+
+def test_package_imports() -> None:
+    importlib.import_module("{{PROJECT_SLUG}}")
+
+
+def test_import_firewall() -> None:
+    """Structural boundary from AGENTS.md, enforced by AST walk.
+
+    Adapt FORBIDDEN to this repo's rule (e.g. execution code must never import
+    from a research/academic data module). Empty means no firewall yet.
+    """
+    forbidden: dict[str, set[str]] = {
+        # "execution": {"{{PROJECT_SLUG}}.data.academic"},
+    }
+    for subpackage, banned in forbidden.items():
+        for path in (SRC / subpackage).rglob("*.py"):
+            tree = ast.parse(path.read_text(), filename=str(path))
+            for node in ast.walk(tree):
+                names: list[str] = []
+                if isinstance(node, ast.Import):
+                    names = [alias.name for alias in node.names]
+                elif isinstance(node, ast.ImportFrom) and node.module:
+                    names = [node.module]
+                for name in names:
+                    for ban in banned:
+                        assert not name.startswith(ban), (
+                            f"{path} imports {name}, which AGENTS.md forbids"
+                        )

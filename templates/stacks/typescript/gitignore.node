@@ -1,0 +1,10 @@
+# Node/TypeScript additions — append to the base .gitignore.
+
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# This repo uses pnpm. Do not introduce an npm/yarn lockfile.
+package-lock.json
+yarn.lock

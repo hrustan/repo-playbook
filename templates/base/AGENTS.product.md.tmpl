@@ -1,0 +1,55 @@
+# AGENTS.md: Working agreement
+
+This repo is built to be handed between agents (and humans). Follow this and a
+fresh agent can pick up any unit of work without prior context. If a rule here
+conflicts with a request, surface the conflict rather than silently overriding it.
+
+## The loop (every session)
+
+1. Read STATUS.md → find the current phase and the notes for the next agent.
+2. Pick one unit of work whose dependencies are done. Read its plan/phase doc fully.
+3. Work on a branch (`feat/<short-slug>` or `phase-N/<short-slug>`).
+4. Record any non-trivial decision as a new ADR in `docs/adr/`.
+5. Update STATUS.md **in the same PR**: what was done, what was deferred, what the
+   next session should pick up.
+
+## Non-negotiables (Definition of Done)
+
+Copy-pasteable into a PR description; the PR template mirrors this list.
+
+- [ ] Lint, typecheck, and tests are green locally.
+- [ ] New behavior has tests; every bug fix has a regression test that fails
+      against the broken code.
+- [ ] STATUS.md updated in this PR.
+- [ ] Any non-trivial decision recorded as an ADR.
+- [ ] No secrets, no committed data, no `{{PROJECT_SLUG}}`-external paths.
+
+## Boundaries
+
+<!-- The one structural rule of this codebase, stated so a test can enforce it.
+     Examples: "only apps/worker touches the network; packages/* are pure",
+     "server-only modules never import into client bundles". Name the test. -->
+
+## ADR discipline
+
+Non-trivial decisions get `docs/adr/NNNN-kebab-title.md` from the template. Keep
+ADRs short (aim for a page). Never delete or edit an accepted ADR — supersede it
+and link both ways.
+
+## Commits & branches
+
+- Conventional Commits: `feat(scope):`, `fix:`, `docs:`, `test:`, `chore:`, `ci:`.
+  Subject ≤ 72 chars, imperative; body explains *why* (the diff shows what).
+- One unit of work per PR where possible. Delete branches after merge.
+
+## Code conventions
+
+- Strict typing everywhere. No escape hatches (`any`, `# type: ignore`) without a
+  `// why:` comment — the comment, not the linter, is the gate.
+- Validate all external data at the boundary (schema-parse payloads, not trust).
+- Prefer leaving a clear seam + a TODO referencing the plan doc over guessing.
+
+## When you're unsure
+
+Record the question as an open decision in STATUS.md and stop. Do not imply
+something exists when it is unbuilt.
