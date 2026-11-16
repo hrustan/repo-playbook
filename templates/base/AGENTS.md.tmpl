@@ -14,25 +14,34 @@ The full gate, the same one CI runs. Run it before every commit:
 
 ## The loop (every session)
 
-1. Read STATUS.md → find the current phase and the notes for the next agent.
+1. Read `STATUS.md` (it is short) and the current phase in `ROADMAP.md`. For what
+   happened recently, run `git log --oneline -15`.
 2. Pick one unit of work whose dependencies are done. Read its plan/phase doc fully.
 3. Work on a branch (`feat/<short-slug>` or `phase-N/<short-slug>`).
 4. Record any non-trivial decision as a new ADR in `docs/adr/`.
-5. Update STATUS.md **in the same PR**: what was done, what was deferred, what the
-   next session should pick up.
+5. Before stopping, fix any line of `STATUS.md` that is no longer true. If
+   nothing in it changed, leave it alone. What you did goes in the commit body.
 
 ## Non-negotiables (Definition of Done)
 
 Copy-pasteable into a PR description; the PR template mirrors this list.
 
-- [ ] Lint, typecheck, and tests are green locally.
+- [ ] The gate is green locally: `{{CHECK_CMD}}`.
 - [ ] New behavior has tests; every bug fix has a regression test that fails
       against the broken code.
-- [ ] STATUS.md updated in this PR.
+- [ ] `STATUS.md` is still true. Edit it only if this change made a line false.
 - [ ] Any non-trivial decision recorded as an ADR.
 - [ ] No secrets, no committed data, no `{{PROJECT_SLUG}}`-external paths.
       Secrets live in `.env` (git-ignored), listed by name in `.env.example`;
       never print, log, or commit a key value.
+
+## STATUS.md is a snapshot, not a log
+
+It says where things stand now, in four short sections, and has a hard limit of
+60 lines that `scripts/check-docs.sh` enforces. Never add a dated entry, a list
+of finished work, or a changelog to it or to any other file: history is
+`git log`. If the check fails, delete what is stale. Do not move it elsewhere,
+and do not raise the limit; that is the owner's decision.
 
 ## Boundaries
 
@@ -50,6 +59,8 @@ and link both ways.
 
 - Conventional Commits: `feat(scope):`, `fix:`, `docs:`, `test:`, `chore:`, `ci:`.
   Subject ≤ 72 chars, imperative; body explains *why* (the diff shows what).
+- The commit body is this project's history. Say what was done and what was
+  deferred; nothing else records it.
 - One unit of work per PR where possible. Delete branches after merge.
 
 ## Code conventions
@@ -61,5 +72,5 @@ and link both ways.
 
 ## When you're unsure
 
-Record the question as an open decision in STATUS.md and stop. Do not imply
+Add the question under "Needs owner" in `STATUS.md` and stop. Do not imply
 something exists when it is unbuilt.

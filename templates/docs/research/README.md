@@ -1,7 +1,12 @@
 # Research notes
 
 Numbered, dated, point-in-time. Start from [0000-template.md](0000-template.md);
-every note gets a row in the repo README's doc index in the same commit.
+every note gets a row in the index below in the same commit. Nothing here is read
+by default: an agent opens a note when the index says it is relevant.
+
+| Note | Question it answers | Date |
+|------|---------------------|------|
+| | | |
 
 ## What lives here vs in adr/
 

@@ -1,10 +1,13 @@
 # Known issues — {{PROJECT_NAME}}
 
-Coded register so commits and STATUS entries can reference issues by ID
-("Fix KI-1 …"). Resolved issues stay listed with their resolution, newest first.
+Open issues only, coded so commits can reference them ("Fix KI-1 …"). When one
+is fixed, delete its entry: the fixing commit cites the ID, and
+`git log --grep KI-1` finds it. IDs are never reused.
+
+**Next ID:** KI-2
 
 ## KI-1: <symptom in one line>
 
-**Observed:** YYYY-MM-DD · **Status:** open | fixed (YYYY-MM-DD, commit/PR)
+**Observed:** YYYY-MM-DD
 
 What happens, when, and the smallest reproduction known. Suspected cause if any.

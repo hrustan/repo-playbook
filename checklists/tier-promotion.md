@@ -11,8 +11,11 @@ promoting ended up with untested critical paths and READMEs frozen mid-handoff:
 
 ## Promotion steps (thirty minutes)
 
-- [ ] Add AGENTS.md (one flavor), STATUS.md (real phase board + first changelog
-      entry), ROADMAP.md (gates AND kill criteria).
+- [ ] Re-run `scripts/bootstrap.sh` on the repo with `--tier 1`: it adds the new
+      files and appends the map to the existing README without overwriting
+      anything.
+- [ ] Fill AGENTS.md (the boundary rule, the gate command), STATUS.md (what is
+      in flight and what is next), ROADMAP.md (gates AND kill criteria).
 - [ ] `docs/adr/`: copy the template + index; backfill the decisions already made
       as ADR-0002+ — from memory, dated today, honestly marked as backfilled.
 - [ ] Stack tooling from `templates/stacks/<stack>/`; tests for anything whose

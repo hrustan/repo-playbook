@@ -43,14 +43,23 @@ Promotion triggers are in [checklists/tier-promotion.md](checklists/tier-promoti
 
 ## The doc system (the part that matters)
 
+One rule, learned from real use and explained in
+[playbooks/01-doc-system.md](playbooks/01-doc-system.md):
+
+> Files an agent reads every session are small snapshots, edited in place. Git
+> is the log. Anything allowed to grow is read only on demand.
+
 Four root files with strict, non-overlapping roles:
 
-> **README = map · ROADMAP = forward plan · STATUS = decision log & live state · AGENTS = the rules.**
+> **README = map · ROADMAP = forward plan · STATUS = snapshot of now · AGENTS = the rules.**
 
-- README never carries state. It is an index; every new doc gets a row in it **in
-  the same commit** that creates the doc.
-- STATUS.md opens with `Last updated:` and ends with a changelog. Agents read it
-  first and update it before ending a session. This is the load-bearing file.
+- README never carries state. It indexes doc trees and living docs; dated notes
+  and ADRs are indexed inside their own tree.
+- STATUS.md is four short sections with a 60-line limit. Agents fix what is no
+  longer true and never append. History is `git log`.
+- ROADMAP.md is forward-only: a finished phase is deleted.
+- `scripts/check-docs.sh` enforces the limits in CI and in the local gate, so
+  the rule does not depend on an agent choosing to follow it.
 - ADRs are immutable. To change a decision, write a new ADR that supersedes the old
   one and link both ways.
 - Perishable numbers live only in dated docs; living docs never carry a count or
@@ -65,8 +74,8 @@ Four root files with strict, non-overlapping roles:
 | [templates/base/AGENTS.md.tmpl](templates/base/AGENTS.md.tmpl) | Agent rules every repo gets (session loop, Definition of Done) |
 | [templates/base/AGENTS.research.md.tmpl](templates/base/AGENTS.research.md.tmpl) | Research rules appended to AGENTS.md (mission, pre-registered gates, data hygiene) |
 | [templates/base/CLAUDE.md.tmpl](templates/base/CLAUDE.md.tmpl) | Two-line shim for tools that only read CLAUDE.md |
-| [templates/base/STATUS.md.tmpl](templates/base/STATUS.md.tmpl) | Live state: phase board, open decisions, handoff notes, changelog |
-| [templates/base/ROADMAP.md.tmpl](templates/base/ROADMAP.md.tmpl) | Gated phases, each with a kill criterion |
+| [templates/base/STATUS.md.tmpl](templates/base/STATUS.md.tmpl) | Snapshot of now: in flight, next, needs owner, watch out |
+| [templates/base/ROADMAP.md.tmpl](templates/base/ROADMAP.md.tmpl) | Forward-only gated phases, each with a kill criterion |
 | [templates/base/gitignore.base](templates/base/gitignore.base) | Commented, policy-citing ignore skeleton |
 | [templates/base/env.example.tmpl](templates/base/env.example.tmpl) | Names-only env file with per-variable exposure notes |
 | [templates/base/LICENSE.MIT.tmpl](templates/base/LICENSE.MIT.tmpl) | MIT license |
@@ -74,9 +83,9 @@ Four root files with strict, non-overlapping roles:
 | [templates/docs/adr/0001-record-architecture-decisions.md](templates/docs/adr/0001-record-architecture-decisions.md) | Meta-ADR adopting the ADR practice |
 | [templates/docs/adr/README.md](templates/docs/adr/README.md) | ADR index convention |
 | [templates/docs/research/0000-template.md](templates/docs/research/0000-template.md) | Numbered research note |
-| [templates/docs/research/README.md](templates/docs/research/README.md) | What goes in research/ vs adr/ |
+| [templates/docs/research/README.md](templates/docs/research/README.md) | Research-note index, and what goes in research/ vs adr/ |
 | [templates/docs/runbook.md.tmpl](templates/docs/runbook.md.tmpl) | Operator runbook, TL;DR first |
-| [templates/docs/known-issues.md.tmpl](templates/docs/known-issues.md.tmpl) | KI-coded known-issues register |
+| [templates/docs/known-issues.md.tmpl](templates/docs/known-issues.md.tmpl) | KI-coded register of open issues |
 | [templates/scripts/check-docs.sh](templates/scripts/check-docs.sh) | Docs gate: size limits on the files agents read every session, and no stray root docs |
 | [templates/github/workflows/ci-node.yml](templates/github/workflows/ci-node.yml) | Node/pnpm quality gate |
 | [templates/github/workflows/ci-python.yml](templates/github/workflows/ci-python.yml) | Python quality gate |

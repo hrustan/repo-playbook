@@ -15,7 +15,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 # file:max-lines — a file that does not exist is skipped.
 LIMITS="
-AGENTS.md:150
+AGENTS.md:200
 STATUS.md:60
 ROADMAP.md:150
 docs/known-issues.md:100

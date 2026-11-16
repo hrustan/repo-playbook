@@ -5,12 +5,13 @@
 
 ## Definition of Done (AGENTS.md)
 
-- [ ] Lint, typecheck, and tests are green.
+- [ ] The gate is green.
 - [ ] New behavior has tests; bug fixes have a regression test.
-- [ ] STATUS.md updated in this PR.
+- [ ] STATUS.md is still true (edited only if this change made a line false).
 - [ ] Non-trivial decisions recorded as ADRs.
 - [ ] No secrets, no committed data.
 
 ## Notes
 
-Anything the reviewer (or the next agent) should know.
+What was done and what was deferred. With squash-merge set to "PR title and
+description", this text becomes the commit body, which is the project's history.

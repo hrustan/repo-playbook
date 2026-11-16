@@ -41,8 +41,9 @@ rewrite and accepting the exposure *before* the repo goes public, not after.
 Beyond the repo itself: bump the version in the manifest, write and host a privacy
 policy if the thing touches user data, prepare listing assets (screenshots at the
 required sizes, icons), and expect the first review round-trip to take days —
-plan releases around it, and keep a `PUBLISHING.md` runbook in the repo recording
-what the reviewer flagged so the next release doesn't repeat it.
+plan releases around it, and keep a `docs/publishing.md` checklist of what the
+reviewer flagged so the next release doesn't repeat it. It is a current
+checklist, edited in place, not a log of past submissions.
 
 ## 6. After flipping public
 

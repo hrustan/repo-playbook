@@ -1,34 +1,24 @@
 # STATUS — {{PROJECT_NAME}}
 
-**Last updated:** {{YEAR}}-MM-DD
-**Current phase:** P0
+> A snapshot of now, not a log. Fix lines that are no longer true; to add a
+> line, delete one. Limit: 60 lines. History is `git log`.
 
-## Phase board
+## Now
 
-| Phase | Gate (what must be TRUE to pass) | State |
-|-------|----------------------------------|-------|
-| P0 — | | ☐ |
-| P1 — | | ☐ |
+What is in flight, and on which branch. At most five bullets.
 
-## Open decisions
+## Next
 
-Questions that need the owner. Append here; move to Resolved when decided; record
-non-trivial ones as ADRs.
+The concrete starting point for the next session: which file, which task, which
+command. At most five bullets.
 
-- OD-1:
+## Needs owner
 
-## Resolved decisions
+Questions and ADR proposals only the owner can settle, one line each. Delete a
+line once it is answered. If this section is full, raise the new item in your
+commit body instead; never delete an unanswered one to make room.
 
-See [docs/adr/](docs/adr/) for the full records.
+## Watch out
 
-- OD-0: — resolved YYYY-MM-DD (ADR-0001)
-
-## Notes for the next agent
-
-Concrete starting point: which file, which task, what to watch out for.
-
-## Changelog
-
-Newest first. One dated entry per working session.
-
-- **{{YEAR}}-MM-DD** — repo created from repo-playbook.
+Live gotchas that would bite the next session. Delete each one when it stops
+being true.

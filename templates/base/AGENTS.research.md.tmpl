@@ -31,11 +31,9 @@ mechanical gates a rule, it is on you to hold it.
 
 ### Research docs
 
-- README = map · ROADMAP = forward plan · STATUS = decision log & live state ·
-  AGENTS = these rules. Don't blend the roles.
-- Every new dated doc gets a row in the README doc index in the same commit.
-- Numbered doc trees each carry their own `_TEMPLATE`: `docs/adr/` (decisions),
-  `docs/research/` (notes), `docs/runbooks/` (procedures).
+- Numbered notes live in `docs/research/`, from its template. Every new note gets
+  a row in `docs/research/README.md` in the same commit, not in the root README.
+  Nothing there is read by default; open a note when its index row is relevant.
 - Dated docs are snapshots — never rewrite them; add a new dated doc, and banner
   the old one if superseded.
 - Perishable numbers live only in dated docs, or are tagged `as of YYYY-MM-DD`.

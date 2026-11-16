@@ -9,7 +9,7 @@ the agent file is the program.
 ```
 AGENTS.md      # the rules — an agent reads this, then STATUS, then acts
 README.md      # map + doc index (every new doc gets a row, same commit)
-STATUS.md      # open/resolved decisions, live state, changelog
+STATUS.md      # a snapshot: now, next, needs owner, watch out (60-line limit)
 ROADMAP.md     # gated phases with kill criteria, freely rewritten
 docs/          # partitioned by KIND, not topic:
   adr/         #   immutable decisions
@@ -21,9 +21,10 @@ scripts/       # optional: stdlib-only pullers; raw output to git-ignored data/
 
 ## The rules that make it work
 
-- **Role separation**: README = map · ROADMAP = forward plan · STATUS = decision
-  log · AGENTS = rules. Decisions get *logged* in STATUS and *executed* via
-  ROADMAP — don't blend the two.
+- **Role separation**: README = map · ROADMAP = forward plan · STATUS = snapshot
+  of now · AGENTS = rules. A docs-only repo is where STATUS.md bloats fastest,
+  because every session's output is prose; the snapshot rule and the docs gate
+  in [01-doc-system.md](01-doc-system.md) matter most here.
 - **Snapshots are immutable.** A superseded research doc gets a one-line banner
   pointing at the newer one; it is never rewritten.
 - **Perishable numbers only in dated docs** — a living doc carrying an untagged

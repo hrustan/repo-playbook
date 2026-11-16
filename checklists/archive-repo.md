@@ -3,8 +3,8 @@
 A dead repo that says so is an asset; one that trails off mid-thought is a trap
 for the next reader (including future you and your agents).
 
-- [ ] Final STATUS.md entry: what was concluded, what was abandoned and why, and
-      the verdict if there was a gate. Date it.
+- [ ] Final STATUS.md rewrite: what was concluded, what was abandoned and why,
+      and the verdict if there was a gate. It replaces the working snapshot.
 - [ ] README banner at the top: `> **Archived YYYY-MM-DD.** <one-line outcome.
       Successor repo, if any.>`
 - [ ] Close the loop on open decisions: each one gets resolved, moved to the

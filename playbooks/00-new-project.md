@@ -41,7 +41,8 @@ Or copy files by hand and fill every `{{...}}` placeholder (grep for `{{` after)
    by hand). Fill the project-specific slots: the one boundary/firewall rule, and
    (research) the pre-registered gate. Delete sections that don't apply; lean
    beats complete.
-2. **STATUS.md** — write the real phase board and the first changelog entry.
+2. **STATUS.md** — fill "Now" and "Next". It is a snapshot with a 60-line limit,
+   never a log; see [01-doc-system.md](01-doc-system.md).
 3. **ROADMAP.md** — phases with gates AND kill criteria, written before the work.
 4. **docs/adr/** — ADR-0001 is included; your first real decision is ADR-0002.
    Often that's the stack choice.
@@ -55,8 +56,14 @@ Or copy files by hand and fill every `{{...}}` placeholder (grep for `{{` after)
 
 ## 4. The standing rules (all tiers)
 
-- README is a map, never state. State lives in STATUS.md only.
-- Every new doc gets a README doc-index row in the same commit.
+- README is a map, never state. Current state lives in STATUS.md only; history
+  lives in git only.
+- Every new doc tree or living doc gets a README row in the same commit. Dated
+  notes and ADRs are indexed in their own tree's README.
+- On GitHub, set squash-merge's default commit message to "Pull request title
+  and description" (Settings → General → Pull Requests). The commit body is the
+  project's history, and a PR description that never reaches git is lost to it.
 - Trunk-only for Tier 0. Tier 1+: branch `feat/<kebab-slug>` (or
   `phase-N/<slug>`), PR, merge, delete the branch.
-- Enforcement is CI plus the PR checklist — not git hooks.
+- Enforcement is CI plus the PR checklist — not git hooks. CI includes the docs
+  gate, `scripts/check-docs.sh`, at every tier from 1 up.

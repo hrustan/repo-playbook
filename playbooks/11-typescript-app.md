@@ -53,4 +53,5 @@ Only when there are genuinely two deployables or a shared library:
   carries the task ID scheme (`[P?-T?]`).
 - Delete branches after merge. The audit found a repo with 32 branches, 25 of
   them merged and dead.
-- Keep README's quickstart honest; everything stateful goes to STATUS.md.
+- Keep README's quickstart honest; current state goes to STATUS.md and history
+  to git.
