@@ -1,0 +1,15 @@
+# Keep action pins current, both in this repo's own workflows and in the
+# workflow templates that get copied into new repos.
+#
+# The templates directory is not a location GitHub's docs describe for the
+# github-actions ecosystem; it works because Dependabot scans every *.yml in a
+# non-root directory it is pointed at. If it ever stops, the weekly `generated`
+# CI job is the backstop for stale pins.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /templates/github/workflows
+    schedule:
+      interval: weekly
