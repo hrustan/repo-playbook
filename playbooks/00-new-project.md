@@ -23,15 +23,21 @@ spike at Tier 1; unfilled ceremony rots and trains you to ignore it.
 ```sh
 path/to/repo-playbook/scripts/bootstrap.sh \
   --target ../new-project --name "New Project" \
-  --one-liner "What it does." --tier 1 --stack python
+  --one-liner "What it does." --tier 1 --kind product --stack python
 ```
+
+Kind (`product` or `research`) and stack (`python`, `typescript`, or `none`) are
+independent choices. The script never overwrites a file without `--force`, and
+it appends to `.gitignore`, `README.md`, and `AGENTS.md` at most once, so it is
+safe to run on top of a repo a scaffolder created and to re-run with a higher
+`--tier` to promote a repo.
 
 Or copy files by hand and fill every `{{...}}` placeholder (grep for `{{` after).
 
 ## 3. Tier 1 setup, in order
 
 1. **AGENTS.md** — one shared file; research repos get the research rules
-   appended (`--agents research`, or paste `AGENTS.research.md.tmpl` at the end
+   appended (`--kind research`, or paste `AGENTS.research.md.tmpl` at the end
    by hand). Fill the project-specific slots: the one boundary/firewall rule, and
    (research) the pre-registered gate. Delete sections that don't apply; lean
    beats complete.

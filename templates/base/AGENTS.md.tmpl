@@ -4,6 +4,14 @@ This repo is built to be handed between agents (and humans). Follow this and a
 fresh agent can pick up any unit of work without prior context. If a rule here
 conflicts with a request, surface the conflict rather than silently overriding it.
 
+## Commands
+
+The full gate, the same one CI runs. Run it before every commit:
+
+```sh
+{{CHECK_CMD}}
+```
+
 ## The loop (every session)
 
 1. Read STATUS.md → find the current phase and the notes for the next agent.

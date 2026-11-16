@@ -19,7 +19,7 @@ Two ways, interchangeable:
 
    ```sh
    scripts/bootstrap.sh --target ../my-project --name "My Project" \
-     --one-liner "What it does in one sentence" --tier 1 --stack python
+     --one-liner "What it does in one sentence" --tier 1 --kind product --stack python
    ```
 
    Supports `--dry-run` (show what would happen) and `--force` (overwrite existing
@@ -60,7 +60,8 @@ Four root files with strict, non-overlapping roles:
 
 | Path | What it is |
 |------|-----------|
-| [templates/base/README.md.tmpl](templates/base/README.md.tmpl) | Map-style README with doc index |
+| [templates/base/README.md.tmpl](templates/base/README.md.tmpl) | README every repo gets: name, one-liner, quickstart |
+| [templates/base/README.tier1.md.tmpl](templates/base/README.tier1.md.tmpl) | Map block appended to the README at Tier 1 (start-here links, doc index) |
 | [templates/base/AGENTS.md.tmpl](templates/base/AGENTS.md.tmpl) | Agent rules every repo gets (session loop, Definition of Done) |
 | [templates/base/AGENTS.research.md.tmpl](templates/base/AGENTS.research.md.tmpl) | Research rules appended to AGENTS.md (mission, pre-registered gates, data hygiene) |
 | [templates/base/CLAUDE.md.tmpl](templates/base/CLAUDE.md.tmpl) | Two-line shim for tools that only read CLAUDE.md |
@@ -98,6 +99,7 @@ Every `.tmpl` file uses these; `scripts/bootstrap.sh` fills them all.
 | `{{PROJECT_SLUG}}` | kebab-case repo/package name | `my-project` |
 | `{{PROJECT_PKG}}` | snake_case Python package name, derived from the slug | `my_project` |
 | `{{ONE_LINER}}` | One-sentence description | `Watches X and reports Y.` |
+| `{{CHECK_CMD}}` | The command that runs the repo's full gate | `make check` |
 | `{{YEAR}}` | Current year | `2026` |
 | `{{COPYRIGHT_HOLDER}}` | Name on the LICENSE line | your name or handle |
 

@@ -65,6 +65,30 @@ jobs:
           assert got["description"] == want, got
           print("ok")
           EOF
+      - name: every tier renders with working links, and promotion is additive
+        run: |
+          for tier in 0 1 2; do
+            scripts/bootstrap.sh --target "/tmp/tier-$tier" --name "Tier Probe" \
+              --tier "$tier" --github-user probe >/dev/null
+            python3 scripts/check-links.py "/tmp/tier-$tier"
+          done
+          # promoting a Tier 0 repo in place must add the Tier 1 map to its README
+          scripts/bootstrap.sh --target /tmp/tier-0 --name "Tier Probe" \
+            --tier 1 --github-user probe >/dev/null
+          grep -qxF '## Start here' /tmp/tier-0/README.md
+          python3 scripts/check-links.py /tmp/tier-0
+      - name: bootstrap layers onto a repo a scaffolder already made
+        run: |
+          mkdir -p /tmp/overlay
+          printf 'node_modules/\n' > /tmp/overlay/.gitignore
+          printf '# Scaffolded\n' > /tmp/overlay/README.md
+          scripts/bootstrap.sh --target /tmp/overlay --name "Overlay Probe" \
+            --tier 1 --stack none --check-cmd "npm test" --github-user probe
+          grep -qxF 'node_modules/' /tmp/overlay/.gitignore   # theirs survives
+          grep -qxF '.env' /tmp/overlay/.gitignore            # ours lands
+          grep -qxF '# Scaffolded' /tmp/overlay/README.md
+          grep -qxF '## Start here' /tmp/overlay/README.md
+          grep -qxF 'npm test' /tmp/overlay/AGENTS.md
       - name: templates parse as-is
         run: |
           python3 -m pip install --quiet pyyaml
@@ -91,18 +115,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        stack: [python, typescript, docs]
-        agents: [research, product]
+        stack: [python, typescript, none]
+        kind: [research, product]
     env:
       STACK: ${{ matrix.stack }}
-      AGENTS: ${{ matrix.agents }}
+      KIND: ${{ matrix.kind }}
     steps:
       - uses: actions/checkout@v7
       - name: bootstrap a Tier 2 repo into ./gen
         run: |
           scripts/bootstrap.sh --target gen --name "Gate Probe" \
             --one-liner "CI probe." --tier 2 --stack "$STACK" \
-            --agents "$AGENTS" --github-user probe
+            --kind "$KIND" --github-user probe
           git -C gen init -q
           ! grep -rnE '\{\{[A-Z_]+\}\}' gen
       - name: rendered links resolve
