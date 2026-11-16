@@ -43,4 +43,5 @@ scripts/       # optional: stdlib-only pullers; raw output to git-ignored data/
 
 `base/AGENTS.md.tmpl` plus `base/AGENTS.research.md.tmpl` (delete the code
 sections if there is no code), `base/STATUS.md.tmpl`, `base/ROADMAP.md.tmpl`, `docs/adr/*`,
-`docs/research/*`. Skip stacks, CI, and tests entirely.
+`docs/research/*`. Skip stacks and tests entirely. CI is one job, the docs gate
+(`ci-docs.yml` running `scripts/check-docs.sh`).

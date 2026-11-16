@@ -99,7 +99,9 @@ fill() { # fill SRC DEST — print SRC with placeholders filled, escaped for DES
       holder="$(escape_quoted "$HOLDER")"
       ;;
   esac
-  content="$(cat "$src")"
+  # The "proposed" marker is a note to the playbook's maintainer. It means
+  # nothing in a generated repo, so it does not travel.
+  content="$(grep -vxE '(# )?<!-- proposed: not currently in my repos -->' "$src" || true)"
   content="${content//\{\{PROJECT_NAME\}\}/$name}"
   content="${content//\{\{PROJECT_SLUG\}\}/$SLUG}"
   content="${content//\{\{PROJECT_PKG\}\}/$PKG}"
@@ -167,6 +169,7 @@ if [ "$TIER" -ge 1 ]; then
   render "$TEMPLATES/docs/adr/0001-record-architecture-decisions.md" \
                                                   "docs/adr/0001-record-architecture-decisions.md"
   render "$TEMPLATES/docs/adr/README.md"          "docs/adr/README.md"
+  render "$TEMPLATES/scripts/check-docs.sh"       "scripts/check-docs.sh"
   case "$STACK" in
     python)
       render "$TEMPLATES/stacks/python/pyproject.toml.tmpl"       "pyproject.toml"
@@ -191,6 +194,7 @@ if [ "$TIER" -ge 1 ]; then
     docs)
       render "$TEMPLATES/docs/research/0000-template.md" "docs/research/0000-template.md"
       render "$TEMPLATES/docs/research/README.md"        "docs/research/README.md"
+      render "$TEMPLATES/github/workflows/ci-docs.yml"   ".github/workflows/ci.yml"
       ;;
   esac
 fi

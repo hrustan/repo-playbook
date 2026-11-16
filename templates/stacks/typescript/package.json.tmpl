@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "check": "pnpm lint && pnpm typecheck && pnpm test"
+    "check-docs": "bash scripts/check-docs.sh",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm check-docs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

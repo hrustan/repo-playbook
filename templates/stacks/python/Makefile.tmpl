@@ -1,13 +1,13 @@
 # uv owns the environment: `uv run` always uses this repo's .venv, so a login
 # shell that defaults to a sibling repo's venv (which has no {{PROJECT_PKG}}
 # package) cannot leak in. Never call a bare `python` or `pytest` here.
-.PHONY: install check test lint fmt
+.PHONY: install check test lint fmt check-docs
 
 install:
 	uv sync
 
 # The full gate: the local mirror of CI.
-check: lint test
+check: lint test check-docs
 
 test:
 	uv run pytest
@@ -18,3 +18,7 @@ lint:
 
 fmt:
 	uv run ruff format .
+
+# Size limits on the docs agents read every session.
+check-docs:
+	bash scripts/check-docs.sh

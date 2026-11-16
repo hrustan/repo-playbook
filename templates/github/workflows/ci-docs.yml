@@ -1,0 +1,21 @@
+# <!-- proposed: not currently in my repos -->
+# Docs gate for a repo with no code stack. It only enforces the size limits on
+# the docs agents read every session (scripts/check-docs.sh) — the one check a
+# docs-only repo needs, because that is where those files grow fastest.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - run: bash scripts/check-docs.sh

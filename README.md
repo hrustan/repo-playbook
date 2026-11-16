@@ -76,8 +76,10 @@ Four root files with strict, non-overlapping roles:
 | [templates/docs/research/README.md](templates/docs/research/README.md) | What goes in research/ vs adr/ |
 | [templates/docs/runbook.md.tmpl](templates/docs/runbook.md.tmpl) | Operator runbook, TL;DR first |
 | [templates/docs/known-issues.md.tmpl](templates/docs/known-issues.md.tmpl) | KI-coded known-issues register |
+| [templates/scripts/check-docs.sh](templates/scripts/check-docs.sh) | Docs gate: size limits on the files agents read every session, and no stray root docs |
 | [templates/github/workflows/ci-node.yml](templates/github/workflows/ci-node.yml) | Node/pnpm quality gate |
 | [templates/github/workflows/ci-python.yml](templates/github/workflows/ci-python.yml) | Python quality gate |
+| [templates/github/workflows/ci-docs.yml](templates/github/workflows/ci-docs.yml) | Docs gate only, for repos with no code stack |
 | [templates/github/workflows/scheduled-job.yml](templates/github/workflows/scheduled-job.yml) | Cron job skeleton with header-comment runbook |
 | [templates/github/ISSUE_TEMPLATE/task.md](templates/github/ISSUE_TEMPLATE/task.md) | Phase-task issue template |
 | [templates/github/PULL_REQUEST_TEMPLATE.md](templates/github/PULL_REQUEST_TEMPLATE.md) | PR template mirroring the AGENTS.md Definition of Done |
@@ -108,6 +110,8 @@ audited repos; they fill gaps the audit surfaced. Adopt or delete deliberately:
 - `templates/docs/adr/0001-record-architecture-decisions.md` — meta-ADR
 - `templates/github/workflows/ci-python.yml` — the Python CI gate none of my Python repos had
 - `checklists/tier-promotion.md` — explicit spike→project triggers
+- `templates/scripts/check-docs.sh` and `templates/github/workflows/ci-docs.yml` —
+  the docs gate, added after STATUS.md and ADR counts grew without limit in real use
 - the `uv` workflow (`uv sync`, `uv run`, committed `uv.lock`) in the Python stack and [playbooks/10-python-research.md](playbooks/10-python-research.md)
 
 ## License

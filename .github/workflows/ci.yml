@@ -107,6 +107,19 @@ jobs:
           ! grep -rnE '\{\{[A-Z_]+\}\}' gen
       - name: rendered links resolve
         run: python3 scripts/check-links.py gen
+      - name: the docs gate passes on a fresh repo and fails on a violation
+        working-directory: gen
+        # `! cmd` does not trip `set -e`, so each expected failure is an `if`.
+        run: |
+          bash scripts/check-docs.sh
+          cp STATUS.md "$RUNNER_TEMP/STATUS.keep"
+          for i in $(seq 70); do echo "- padding $i" >> STATUS.md; done
+          if bash scripts/check-docs.sh; then echo "an over-limit STATUS.md passed"; exit 1; fi
+          cp "$RUNNER_TEMP/STATUS.keep" STATUS.md
+          touch NOTES.md
+          if bash scripts/check-docs.sh; then echo "a stray root doc passed"; exit 1; fi
+          rm NOTES.md
+          bash scripts/check-docs.sh
 
       - if: matrix.stack == 'typescript'
         uses: pnpm/action-setup@v6
