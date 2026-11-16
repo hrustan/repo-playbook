@@ -1,7 +1,7 @@
 # <!-- proposed: not currently in my repos -->
-# Quality gate: lint + test on every push to main and every PR. Assembles the
-# `make lint` / `make test` targets that existed locally in my Python repos but
-# were never enforced by CI.
+# Quality gate: lint + format check + test on every push to main and every PR.
+# The same commands `make check` runs locally, so a green local gate means a
+# green CI. Installs from uv.lock; a stale lockfile fails the run.
 name: CI
 
 on:
@@ -9,16 +9,30 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor from requires-python, and the newest release. Raise the
+        # second entry when a new Python ships.
+        python-version: ["3.11", "3.15"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      # setup-uv publishes no moving major tag, so pin the release commit.
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
-          python-version: "3.11"
-          cache: pip
-      - run: pip install -e ".[dev]"
-      - run: ruff check .
-      - run: ruff format --check .
-      - run: pytest
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest

@@ -81,7 +81,7 @@ Four root files with strict, non-overlapping roles:
 | [templates/github/workflows/scheduled-job.yml](templates/github/workflows/scheduled-job.yml) | Cron job skeleton with header-comment runbook |
 | [templates/github/ISSUE_TEMPLATE/task.md](templates/github/ISSUE_TEMPLATE/task.md) | Phase-task issue template |
 | [templates/github/PULL_REQUEST_TEMPLATE.md](templates/github/PULL_REQUEST_TEMPLATE.md) | PR template mirroring the AGENTS.md Definition of Done |
-| [templates/stacks/python/](templates/stacks/python/) | pyproject, venv-pinned Makefile, package seed, guardrail smoke test, gitignore |
+| [templates/stacks/python/](templates/stacks/python/) | pyproject, uv-driven Makefile, package seed, guardrail smoke test, gitignore |
 | [templates/stacks/typescript/](templates/stacks/typescript/) | strict tsconfig, flat ESLint, vitest config, package scripts, seed source and smoke test, gitignore |
 | [checklists/](checklists/) | new-repo, tier-promotion, pre-publish PII sweep, archive-repo |
 | [playbooks/](playbooks/) | The long-form how-and-why for each stack |
@@ -108,7 +108,7 @@ audited repos; they fill gaps the audit surfaced. Adopt or delete deliberately:
 - `templates/docs/adr/0001-record-architecture-decisions.md` — meta-ADR
 - `templates/github/workflows/ci-python.yml` — the Python CI gate none of my Python repos had
 - `checklists/tier-promotion.md` — explicit spike→project triggers
-- the `uv` lockfile note in [playbooks/10-python-research.md](playbooks/10-python-research.md)
+- the `uv` workflow (`uv sync`, `uv run`, committed `uv.lock`) in the Python stack and [playbooks/10-python-research.md](playbooks/10-python-research.md)
 
 ## License
 

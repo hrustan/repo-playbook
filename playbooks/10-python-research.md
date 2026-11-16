@@ -6,19 +6,23 @@ decisions, and data hygiene.
 
 ## Stack
 
-- `pyproject.toml` + hatchling, src layout (`src/<slug>/`), floor-pinned deps with
-  a justification comment on anything non-obvious.
-  <!-- proposed: not currently in my repos --> For reproducible installs, manage
-  the project with `uv` and commit `uv.lock`; none of the audited repos had any
-  lockfile, which made no build reproducible.
+- `pyproject.toml` + hatchling, src layout (`src/<package>/`, the slug in
+  snake_case), floor-pinned deps with a justification comment on anything
+  non-obvious. Dev tools live in `[dependency-groups]`, not in an extra.
+- <!-- proposed: not currently in my repos --> **uv** owns the environment and
+  the lockfile: `uv sync`, `uv run`, and a committed `uv.lock` that CI installs
+  with `--locked`. None of the audited repos had a lockfile, which made no build
+  reproducible.
 - **ruff** for lint + format (`line-length = 100`, `target-version = "py311"`),
   config inline in pyproject. No black, no isort, no pre-commit hooks.
 - **pytest**, centralized `tests/`, files named `test_<module>.py` mirroring
   source 1:1.
-- **Makefile** with every interpreter path pinned to `.venv/bin/...` — a login
-  shell can default to a sibling repo's venv and silently break a bare `python`.
+- **Makefile** whose targets all go through `uv run` — a login shell can default
+  to a sibling repo's venv and silently break a bare `python`, and `uv run`
+  always uses this repo's `.venv`. `make check` is the local mirror of CI.
   See `templates/stacks/python/Makefile.tmpl`.
-- CI: `templates/github/workflows/ci-python.yml`.
+- CI: `templates/github/workflows/ci-python.yml`, on the `requires-python` floor
+  and the newest release.
 
 ## Guardrails as code
 

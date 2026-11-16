@@ -6,15 +6,20 @@ For products: web apps, workers, extensions past the spike stage.
 
 - **pnpm**, pinned once via `"packageManager"` in package.json — CI and
   `pnpm/action-setup` both read it (single source of truth; never pin a second
-  copy in the workflow). The gitignore bans `package-lock.json` and `yarn.lock`
+  copy in the workflow). Node works the same way: the floor lives in
+  `engines.node` and CI reads it with `node-version-file`. The gitignore bans `package-lock.json` and `yarn.lock`
   outright: two lockfiles in one repo is how the audit's worst dependency state
   happened.
 - **TypeScript strict** plus `noUncheckedIndexedAccess` — the single flag that
   most changed real code quality across the audited repos. No `any` without a
   `// why:` comment; ESLint warns (not errors) so the comment, not the linter, is
   the gate.
-- **ESLint 9 flat config**, non-type-checked presets (fast, CI-friendly). No
-  Prettier by default; add it only if a formatter fight actually occurs.
+- **ESLint flat config** via `defineConfig`, non-type-checked presets (fast,
+  CI-friendly). No Prettier by default; add it only if a formatter fight
+  actually occurs. TypeScript is pinned to 6.x until typescript-eslint supports
+  the native 7.x compiler; the config file says so where the pin bites.
+- TypeScript 6 no longer loads every `@types/*` package by default. Code that
+  uses Node globals needs `@types/node` and `"types": ["node"]` in tsconfig.
 - **Vitest.** Single app → one `tests/` dir; monorepo → per-package `tests/`
   dirs with one root vitest config including `packages/**` and `apps/**`.
 - Scripts: `lint`, `typecheck`, `test`, and a `check` aggregate that chains all

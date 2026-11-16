@@ -9,7 +9,7 @@ frozen agent-prompt README — this playbook exists so that stops happening.
 No LICENSE file means all-rights-reserved regardless of visibility — strangers
 can read but not legally use. Add `templates/base/LICENSE.MIT.tmpl` (fill
 `{{YEAR}}`/`{{COPYRIGHT_HOLDER}}`), set the matching `license` field in
-package.json / pyproject.toml. If it must stay proprietary, say so explicitly in
+package.json / pyproject.toml, and add `authors` if the package will be published. If it must stay proprietary, say so explicitly in
 the README instead.
 
 ## 2. README rewrite — for strangers

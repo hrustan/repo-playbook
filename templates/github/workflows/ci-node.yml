@@ -1,7 +1,7 @@
 # Quality gate: lint + typecheck + test on every push to main and every PR.
 # Tests must be hermetic — committed fixtures, never the live network.
-# pnpm version comes from the "packageManager" field in package.json
-# (single source of truth; do not pin a second copy here).
+# Tool versions have one source each, in package.json: pnpm from
+# "packageManager", Node from "engines.node". Do not pin a second copy here.
 name: CI
 
 on:
@@ -9,15 +9,23 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version-file: package.json
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"] # 1.27 is the first with SPDX license metadata
 build-backend = "hatchling.build"
 
 [project]
@@ -7,14 +7,14 @@ name = "{{PROJECT_SLUG}}"
 version = "0.1.0"
 description = "{{ONE_LINER}}"
 requires-python = ">=3.11"
-license = { text = "MIT" } # or { text = "Proprietary" } for private research repos
-authors = [{ name = "{{COPYRIGHT_HOLDER}}" }]
+license = "MIT" # SPDX expression; "LicenseRef-Proprietary" for private research repos
+license-files = ["LICENSE"]
 dependencies = [
   # Floor-pin, and justify anything non-obvious with a trailing comment.
 ]
 
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.5"]
+[dependency-groups]
+dev = ["pytest>=9.0", "ruff>=0.17"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/{{PROJECT_PKG}}"]

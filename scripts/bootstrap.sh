@@ -195,9 +195,11 @@ if [ "$DRY_RUN" -eq 0 ]; then
   echo "      cd $TARGET && git init"
   if [ "$TIER" -ge 1 ] && [ "$STACK" = "typescript" ]; then
     echo "      pnpm install && pnpm check   # writes pnpm-lock.yaml; commit it, CI installs frozen"
+  elif [ "$TIER" -ge 1 ] && [ "$STACK" = "python" ]; then
+    echo "      uv sync && make check        # writes uv.lock; commit it, CI installs with --locked"
   fi
   echo "      git add -A && git commit -m 'chore: bootstrap from repo-playbook'"
   if [ -z "$HOLDER" ]; then
-    echo "note: {{COPYRIGHT_HOLDER}} was empty — fill the blank in LICENSE (and pyproject.toml)."
+    echo "note: {{COPYRIGHT_HOLDER}} was empty — fill the blank in LICENSE."
   fi
 fi
