@@ -10,7 +10,8 @@ real repos the file grew to hundreds of kilobytes and more, and it was read at
 the start of every session.
 
 The cause was not a careless agent. Every instruction said *add*, none said
-*remove*, and nothing set a size.
+*remove*, and nothing set a size. The wording around ADRs had the same flaw and
+the same result; see "Recording decisions" below.
 
 ## The rule
 
@@ -57,6 +58,36 @@ changelog used to hold. Two consequences:
   as the commit body.
 - `git log --oneline -15` is step one of every session, next to reading
   STATUS.md.
+
+## Recording decisions
+
+The first version said "record any non-trivial decision as a new ADR", backed by
+a Definition-of-Done checkbox, a PR-template checkbox, and a meta-ADR that
+called the writing tax "the point". "Non-trivial" was never defined, so to an
+agent almost every decision qualified, and a checkbox is satisfied by producing
+a file. Some repos collected hundreds.
+
+Now a decision takes the cheapest record that works:
+
+1. the commit body, which is the default;
+2. a `// why:` comment at the site;
+3. a rule in AGENTS.md, proposed to the owner;
+4. an ADR, only when it is costly to reverse, a real alternative was rejected,
+   and a future reader would reopen it without the reasoning.
+
+Three things hold the line:
+
+- **The owner approves every ADR.** An agent adds a one-line proposal under
+  "Needs owner" and never writes one unprompted. A decision that is costly to
+  reverse is the owner's to make anyway.
+- **No checkbox asks for one.** Nothing in the Definition of Done or the PR
+  template can be satisfied by creating an ADR.
+- **ADR files are never read by default.** The index in `docs/adr/README.md`
+  states each decision in one line, and a rule every session must follow is
+  promoted into AGENTS.md. The ADR itself is only the why.
+
+Supersede-don't-edit stays. With the gate the count stays small, and a research
+repo needs the trail when a pre-registered gate moves.
 
 ## Enforcement
 

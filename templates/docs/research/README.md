@@ -14,5 +14,5 @@ by default: an agent opens a note when the index says it is relevant.
   rewritten, banner-and-supersede instead.
 - **adr/** records a *decision*: what we chose and rejected. Immutable.
 
-A research note that ends in a decision links to the ADR it produced; the ADR cites
-the note as evidence.
+Most notes lead to no ADR. When one does, the note names it and the ADR cites the
+note as evidence.

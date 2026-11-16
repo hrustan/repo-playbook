@@ -18,8 +18,7 @@ The full gate, the same one CI runs. Run it before every commit:
    happened recently, run `git log --oneline -15`.
 2. Pick one unit of work whose dependencies are done. Read its plan/phase doc fully.
 3. Work on a branch (`feat/<short-slug>` or `phase-N/<short-slug>`).
-4. Record any non-trivial decision as a new ADR in `docs/adr/`.
-5. Before stopping, fix any line of `STATUS.md` that is no longer true. If
+4. Before stopping, fix any line of `STATUS.md` that is no longer true. If
    nothing in it changed, leave it alone. What you did goes in the commit body.
 
 ## Non-negotiables (Definition of Done)
@@ -30,7 +29,6 @@ Copy-pasteable into a PR description; the PR template mirrors this list.
 - [ ] New behavior has tests; every bug fix has a regression test that fails
       against the broken code.
 - [ ] `STATUS.md` is still true. Edit it only if this change made a line false.
-- [ ] Any non-trivial decision recorded as an ADR.
 - [ ] No secrets, no committed data, no `{{PROJECT_SLUG}}`-external paths.
       Secrets live in `.env` (git-ignored), listed by name in `.env.example`;
       never print, log, or commit a key value.
@@ -49,11 +47,22 @@ and do not raise the limit; that is the owner's decision.
      Examples: "only apps/worker touches the network; packages/* are pure",
      "server-only modules never import into client bundles". Name the test. -->
 
-## ADR discipline
+## Recording decisions
 
-Non-trivial decisions get `docs/adr/NNNN-kebab-title.md` from the template. Keep
-ADRs short (aim for a page). Never delete or edit an accepted ADR — supersede it
-and link both ways.
+Use the cheapest record that works. Most decisions stop at 1 or 2.
+
+1. The commit body. This is the default home for "why".
+2. A `// why:` comment at the site, for a local choice a reader would undo.
+3. A rule in this file, when it must change how every future session works.
+   Propose it under "Needs owner"; the owner adds it.
+4. An ADR, only when all three hold: it is costly to reverse (data model,
+   public interface, vendor or platform, security posture); a real alternative
+   was rejected; a future reader would reopen it without the reasoning.
+
+Never write an ADR on your own initiative. Add a one-line proposal under
+"Needs owner" in `STATUS.md` and write it only when the owner says yes. Expect a
+handful per project, not one per feature. The bar and the steps are in
+`docs/adr/README.md`; its index is usually all you need to read.
 
 ## Commits & branches
 

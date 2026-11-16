@@ -16,8 +16,10 @@ promoting ended up with untested critical paths and READMEs frozen mid-handoff:
       anything.
 - [ ] Fill AGENTS.md (the boundary rule, the gate command), STATUS.md (what is
       in flight and what is next), ROADMAP.md (gates AND kill criteria).
-- [ ] `docs/adr/`: copy the template + index; backfill the decisions already made
-      as ADR-0002+ — from memory, dated today, honestly marked as backfilled.
+- [ ] `docs/adr/`: the template and index arrive with the re-run. Backfill only
+      a decision that meets the bar in that index (costly to reverse, a real
+      alternative rejected). Usually that is none or one; the rest are already
+      recorded by the commits that made them.
 - [ ] Stack tooling from `templates/stacks/<stack>/`; tests for anything whose
       output you act on.
 - [ ] CI gate (`ci-node.yml` / `ci-python.yml`) the same day tests exist.

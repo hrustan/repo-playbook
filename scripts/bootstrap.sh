@@ -190,8 +190,6 @@ if [ "$TIER" -ge 1 ]; then
   render "$TEMPLATES/base/STATUS.md.tmpl"         "STATUS.md"
   render "$TEMPLATES/base/ROADMAP.md.tmpl"        "ROADMAP.md"
   render "$TEMPLATES/docs/adr/0000-template.md"   "docs/adr/0000-template.md"
-  render "$TEMPLATES/docs/adr/0001-record-architecture-decisions.md" \
-                                                  "docs/adr/0001-record-architecture-decisions.md"
   render "$TEMPLATES/docs/adr/README.md"          "docs/adr/README.md"
   render "$TEMPLATES/scripts/check-docs.sh"       "scripts/check-docs.sh"
   case "$STACK" in

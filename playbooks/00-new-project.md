@@ -44,8 +44,9 @@ Or copy files by hand and fill every `{{...}}` placeholder (grep for `{{` after)
 2. **STATUS.md** — fill "Now" and "Next". It is a snapshot with a 60-line limit,
    never a log; see [01-doc-system.md](01-doc-system.md).
 3. **ROADMAP.md** — phases with gates AND kill criteria, written before the work.
-4. **docs/adr/** — ADR-0001 is included; your first real decision is ADR-0002.
-   Often that's the stack choice.
+4. **docs/adr/** — starts with only the index and the template, and is meant to
+   stay nearly empty. An ADR is for a decision that is costly to reverse, and
+   each one needs your approval; see [01-doc-system.md](01-doc-system.md).
 5. **Stack files** — from `templates/stacks/<stack>/`. Append the stack gitignore
    to the base one.
 6. **.env.example** — only if there are secrets. Names only, per-variable comment.

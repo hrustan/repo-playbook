@@ -60,8 +60,10 @@ Four root files with strict, non-overlapping roles:
 - ROADMAP.md is forward-only: a finished phase is deleted.
 - `scripts/check-docs.sh` enforces the limits in CI and in the local gate, so
   the rule does not depend on an agent choosing to follow it.
-- ADRs are immutable. To change a decision, write a new ADR that supersedes the old
-  one and link both ways.
+- ADRs are rare and need the owner's approval. A decision gets one only when it
+  is costly to reverse and a real alternative was rejected; everything else is
+  recorded by the commit that made it. Agents propose, they do not write one
+  unprompted. An accepted ADR is superseded, never edited.
 - Perishable numbers live only in dated docs; living docs never carry a count or
   dollar figure unless tagged `as of YYYY-MM-DD`.
 
@@ -79,9 +81,8 @@ Four root files with strict, non-overlapping roles:
 | [templates/base/gitignore.base](templates/base/gitignore.base) | Commented, policy-citing ignore skeleton |
 | [templates/base/env.example.tmpl](templates/base/env.example.tmpl) | Names-only env file with per-variable exposure notes |
 | [templates/base/LICENSE.MIT.tmpl](templates/base/LICENSE.MIT.tmpl) | MIT license |
-| [templates/docs/adr/0000-template.md](templates/docs/adr/0000-template.md) | ADR template (immutable-decision format) |
-| [templates/docs/adr/0001-record-architecture-decisions.md](templates/docs/adr/0001-record-architecture-decisions.md) | Meta-ADR adopting the ADR practice |
-| [templates/docs/adr/README.md](templates/docs/adr/README.md) | ADR index convention |
+| [templates/docs/adr/0000-template.md](templates/docs/adr/0000-template.md) | ADR template, with an approval line and rejected alternatives |
+| [templates/docs/adr/README.md](templates/docs/adr/README.md) | ADR index, the bar a decision must clear, and the owner gate |
 | [templates/docs/research/0000-template.md](templates/docs/research/0000-template.md) | Numbered research note |
 | [templates/docs/research/README.md](templates/docs/research/README.md) | Research-note index, and what goes in research/ vs adr/ |
 | [templates/docs/runbook.md.tmpl](templates/docs/runbook.md.tmpl) | Operator runbook, TL;DR first |
@@ -118,7 +119,6 @@ Items marked `<!-- proposed: not currently in my repos -->` were not observed in
 audited repos; they fill gaps the audit surfaced. Adopt or delete deliberately:
 
 - `templates/base/CLAUDE.md.tmpl` — shim so CLAUDE.md-only tools find AGENTS.md
-- `templates/docs/adr/0001-record-architecture-decisions.md` — meta-ADR
 - `templates/github/workflows/ci-python.yml` — the Python CI gate none of my Python repos had
 - `checklists/tier-promotion.md` — explicit spike→project triggers
 - `templates/scripts/check-docs.sh` and `templates/github/workflows/ci-docs.yml` —
