@@ -22,8 +22,9 @@ Options:
   --one-liner TEXT     one-sentence description (default: "TODO: one-liner")
   --tier 0|1|2         ceremony tier (default: 1)
   --stack STACK        python | typescript | docs (default: docs)
-  --agents FLAVOR      research | product (default: product for typescript,
-                       research otherwise)
+  --agents FLAVOR      product | research (default: product for typescript,
+                       research otherwise). research appends the research
+                       rules to the shared AGENTS.md
   --github-user USER   GitHub handle; only used as the default for --holder
                        (default: git config github.user, else empty)
   --holder NAME        {{COPYRIGHT_HOLDER}} (default: same as --github-user)
@@ -89,13 +90,8 @@ escape_quoted() { # escape_quoted VALUE — make VALUE safe inside a JSON/TOML "
 
 WROTE=0 SKIPPED=0
 
-render() { # render SRC DEST — fill placeholders, honor dry-run/force/idempotence
-  local src="$1" dest="$TARGET/$2" content name="$NAME" one_liner="$ONE_LINER" holder="$HOLDER"
-  if [ -e "$dest" ] && [ "$FORCE" -ne 1 ]; then
-    echo "skip   $2 (exists; use --force to overwrite)"
-    SKIPPED=$((SKIPPED + 1))
-    return 0
-  fi
+fill() { # fill SRC DEST — print SRC with placeholders filled, escaped for DEST's type
+  local src="$1" content name="$NAME" one_liner="$ONE_LINER" holder="$HOLDER"
   case "$2" in
     *.json|*.toml) # free-text values land inside quoted strings in these files
       name="$(escape_quoted "$NAME")"
@@ -110,28 +106,41 @@ render() { # render SRC DEST — fill placeholders, honor dry-run/force/idempote
   content="${content//\{\{ONE_LINER\}\}/$one_liner}"
   content="${content//\{\{YEAR\}\}/$YEAR}"
   content="${content//\{\{COPYRIGHT_HOLDER\}\}/$holder}"
+  printf '%s\n' "$content"
+}
+
+render() { # render SRC DEST — fill placeholders, honor dry-run/force/idempotence
+  local src="$1" dest="$TARGET/$2"
+  if [ -e "$dest" ] && [ "$FORCE" -ne 1 ]; then
+    echo "skip   $2 (exists; use --force to overwrite)"
+    SKIPPED=$((SKIPPED + 1))
+    return 0
+  fi
   if [ "$DRY_RUN" -eq 1 ]; then
     echo "would  $2"
   else
     mkdir -p "$(dirname "$dest")"
-    printf '%s\n' "$content" > "$dest"
+    fill "$src" "$2" > "$dest"
     echo "write  $2"
   fi
   WROTE=$((WROTE + 1))
 }
 
-append_gitignore() { # append_gitignore SRC MARKER — idempotent append to .gitignore
-  local src="$1" marker="$2" dest="$TARGET/.gitignore"
-  if [ -e "$dest" ] && grep -qF "$marker" "$dest"; then
-    echo "skip   .gitignore append ($marker already present)"
+append_block() { # append_block SRC DEST — append SRC to DEST once; SRC's first line is the marker
+  local src="$1" dest="$TARGET/$2" marker
+  marker="$(head -n 1 "$src")"
+  if [ -e "$dest" ] && grep -qxF -- "$marker" "$dest"; then
+    echo "skip   $2 append (\"$marker\" already present)"
     SKIPPED=$((SKIPPED + 1))
     return 0
   fi
   if [ "$DRY_RUN" -eq 1 ]; then
-    echo "would  append $marker block to .gitignore"
+    echo "would  append \"$marker\" block to $2"
   else
-    { echo ""; cat "$src"; } >> "$dest"
-    echo "write  .gitignore ($marker block appended)"
+    mkdir -p "$(dirname "$dest")"
+    if [ -s "$dest" ]; then echo "" >> "$dest"; fi
+    fill "$src" "$2" >> "$dest"
+    echo "write  $2 (\"$marker\" block appended)"
   fi
   WROTE=$((WROTE + 1))
 }
@@ -147,7 +156,10 @@ render "$TEMPLATES/base/LICENSE.MIT.tmpl"  "LICENSE"
 
 # Tier 1 — projects
 if [ "$TIER" -ge 1 ]; then
-  render "$TEMPLATES/base/AGENTS.$AGENTS.md.tmpl" "AGENTS.md"
+  render "$TEMPLATES/base/AGENTS.md.tmpl"         "AGENTS.md"
+  if [ "$AGENTS" = "research" ]; then
+    append_block "$TEMPLATES/base/AGENTS.research.md.tmpl" "AGENTS.md"
+  fi
   render "$TEMPLATES/base/CLAUDE.md.tmpl"         "CLAUDE.md"
   render "$TEMPLATES/base/STATUS.md.tmpl"         "STATUS.md"
   render "$TEMPLATES/base/ROADMAP.md.tmpl"        "ROADMAP.md"
@@ -163,7 +175,7 @@ if [ "$TIER" -ge 1 ]; then
       render "$TEMPLATES/stacks/python/tests/test_smoke.py.tmpl"  "tests/test_smoke.py"
       render "$TEMPLATES/base/env.example.tmpl"                   ".env.example"
       render "$TEMPLATES/github/workflows/ci-python.yml"          ".github/workflows/ci.yml"
-      append_gitignore "$TEMPLATES/stacks/python/gitignore.python" "# Python additions"
+      append_block "$TEMPLATES/stacks/python/gitignore.python"    ".gitignore"
       ;;
     typescript)
       render "$TEMPLATES/stacks/typescript/package.json.tmpl" "package.json"
@@ -174,7 +186,7 @@ if [ "$TIER" -ge 1 ]; then
       render "$TEMPLATES/stacks/typescript/tests/smoke.test.ts" "tests/smoke.test.ts"
       render "$TEMPLATES/base/env.example.tmpl"               ".env.example"
       render "$TEMPLATES/github/workflows/ci-node.yml"        ".github/workflows/ci.yml"
-      append_gitignore "$TEMPLATES/stacks/typescript/gitignore.node" "# Node/TypeScript additions"
+      append_block "$TEMPLATES/stacks/typescript/gitignore.node" ".gitignore"
       ;;
     docs)
       render "$TEMPLATES/docs/research/0000-template.md" "docs/research/0000-template.md"

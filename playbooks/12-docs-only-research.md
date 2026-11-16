@@ -41,6 +41,6 @@ scripts/       # optional: stdlib-only pullers; raw output to git-ignored data/
 
 ## Templates to use
 
-`base/AGENTS.research.md.tmpl` (delete the coding-standards section if there is no
-code), `base/STATUS.md.tmpl`, `base/ROADMAP.md.tmpl`, `docs/adr/*`,
+`base/AGENTS.md.tmpl` plus `base/AGENTS.research.md.tmpl` (delete the code
+sections if there is no code), `base/STATUS.md.tmpl`, `base/ROADMAP.md.tmpl`, `docs/adr/*`,
 `docs/research/*`. Skip stacks, CI, and tests entirely.

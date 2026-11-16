@@ -30,9 +30,11 @@ Or copy files by hand and fill every `{{...}}` placeholder (grep for `{{` after)
 
 ## 3. Tier 1 setup, in order
 
-1. **AGENTS.md** — keep ONE flavor (research or product), delete the other. Fill
-   the project-specific slots: the one boundary/firewall rule, and (research) the
-   pre-registered gate. Delete sections that don't apply; lean beats complete.
+1. **AGENTS.md** — one shared file; research repos get the research rules
+   appended (`--agents research`, or paste `AGENTS.research.md.tmpl` at the end
+   by hand). Fill the project-specific slots: the one boundary/firewall rule, and
+   (research) the pre-registered gate. Delete sections that don't apply; lean
+   beats complete.
 2. **STATUS.md** — write the real phase board and the first changelog entry.
 3. **ROADMAP.md** — phases with gates AND kill criteria, written before the work.
 4. **docs/adr/** — ADR-0001 is included; your first real decision is ADR-0002.

@@ -1,10 +1,8 @@
-# AGENTS.md
+## Research rules
 
-Operating rules for any agent (human or AI) working in this repository. Read this
-before writing code or touching an experiment. If a rule here conflicts with a
-request, surface the conflict rather than silently overriding the rule.
+These apply on top of everything above. The product of this repo is a verdict.
 
-## Mission
+### Mission
 
 {{ONE_LINER}}
 
@@ -13,32 +11,25 @@ well-documented negative result is a successful outcome. Any work that optimizes
 toward the desired answer instead of the honest one is off-mission and must be
 flagged.
 
-## Non-negotiables
+### Gates and data
 
 Each rule states what enforces it. Prefer rules a test can enforce; where nothing
 mechanical gates a rule, it is on you to hold it.
 
-1. **STATUS.md is authoritative.** It is the single source of truth for the current
-   phase, gates, open decisions, and the changelog. Read it at the start of every
-   session; update it before ending one.
-2. **Gates are pre-registered.** Thresholds and kill criteria are fixed before the
+1. **Gates are pre-registered.** Thresholds and kill criteria are fixed before the
    work begins. Do not move a gate or kill criterion after results exist. Changing
    one requires a new ADR.
-3. **Decisions are ADRs.** Any non-trivial decision gets a new file in
-   `docs/adr/`. ADRs are immutable — supersede, never edit.
-4. **Data is never committed.** Pulled/cached data lives under the git-ignored
+2. **Data is never committed.** Pulled/cached data lives under the git-ignored
    `data/` directory. Commit *findings* (a dated write-up with counts and a few
    representative records), not bulk dumps.
-5. **Secrets live in `.env`** (git-ignored), listed by name in `.env.example`.
-   Never print, log, or commit a key value.
-6. <!-- project-specific hard constraint, e.g. an import firewall a smoke test enforces -->
+3. <!-- project-specific hard constraint, e.g. an import firewall a smoke test enforces -->
 
-## The validation gate
+### The validation gate
 
 <!-- Pre-register the pass/fail thresholds for this project's core claim here,
      before any results exist. State them as numbers. Cite the ADR that set them. -->
 
-## Repository conventions
+### Research docs
 
 - README = map · ROADMAP = forward plan · STATUS = decision log & live state ·
   AGENTS = these rules. Don't blend the roles.
@@ -49,18 +40,13 @@ mechanical gates a rule, it is on you to hold it.
   the old one if superseded.
 - Perishable numbers live only in dated docs, or are tagged `as of YYYY-MM-DD`.
 
-## Coding standards
+### Research code
 
-- Type hints on public functions. Tests for anything that computes a result you
-  will act on. Guardrail tests (the ones enforcing rules above) may not be
-  weakened or skipped.
+- Tests for anything that computes a result you will act on. Guardrail tests (the
+  ones enforcing rules above) may not be weakened or skipped.
 - Notebooks, if any, as jupytext `.py` with `# %%` cell markers, never `.ipynb`.
-- Conventional Commits: `feat:`, `fix:`, `docs:`, `test:`, `chore:`. Subject ≤ 72
-  chars; body explains *why*.
 
-## What to do when uncertain
+### Scope
 
-Surface the open question in STATUS.md's open-decisions section and stop there —
-do not guess past a real fork. If a request expands scope (new data vendor, new
-framework, second idea before the first is judged), the default answer is no;
-escalate instead of complying.
+If a request expands scope (new data vendor, new framework, second idea before
+the first is judged), the default answer is no; escalate instead of complying.

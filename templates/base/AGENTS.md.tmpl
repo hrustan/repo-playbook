@@ -23,6 +23,8 @@ Copy-pasteable into a PR description; the PR template mirrors this list.
 - [ ] STATUS.md updated in this PR.
 - [ ] Any non-trivial decision recorded as an ADR.
 - [ ] No secrets, no committed data, no `{{PROJECT_SLUG}}`-external paths.
+      Secrets live in `.env` (git-ignored), listed by name in `.env.example`;
+      never print, log, or commit a key value.
 
 ## Boundaries
 

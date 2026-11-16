@@ -12,8 +12,9 @@ here; placeholders like `{{PROJECT_NAME}}` are intentional and must never be
 2. Copy files with `scripts/bootstrap.sh` (preferred — it fills placeholders and
    never overwrites without `--force`), or by hand for a one-off file. Pass the
    script the chosen tier as `--tier`, since it defaults to Tier 1. For Tier 1+,
-   pick ONE AGENTS.md flavor (research or product) before copying; the script
-   writes only the flavor passed as `--agents` and otherwise picks one by stack.
+   decide whether the repo is research or product before copying; every repo gets
+   the shared AGENTS.md, and `--agents research` appends the research rules to it
+   (otherwise the script picks by stack).
 3. If copying by hand, fill every `{{...}}` placeholder; the full list is in the
    README. Grep for `{{` afterward to confirm none remain.
 4. For Tier 1+, delete any AGENTS.md template sections that don't apply. A lean

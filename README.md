@@ -61,8 +61,8 @@ Four root files with strict, non-overlapping roles:
 | Path | What it is |
 |------|-----------|
 | [templates/base/README.md.tmpl](templates/base/README.md.tmpl) | Map-style README with doc index |
-| [templates/base/AGENTS.research.md.tmpl](templates/base/AGENTS.research.md.tmpl) | Agent rules — research flavor (validation gates, kill criteria) |
-| [templates/base/AGENTS.product.md.tmpl](templates/base/AGENTS.product.md.tmpl) | Agent rules — product flavor (session loop, Definition of Done) |
+| [templates/base/AGENTS.md.tmpl](templates/base/AGENTS.md.tmpl) | Agent rules every repo gets (session loop, Definition of Done) |
+| [templates/base/AGENTS.research.md.tmpl](templates/base/AGENTS.research.md.tmpl) | Research rules appended to AGENTS.md (mission, pre-registered gates, data hygiene) |
 | [templates/base/CLAUDE.md.tmpl](templates/base/CLAUDE.md.tmpl) | Two-line shim for tools that only read CLAUDE.md |
 | [templates/base/STATUS.md.tmpl](templates/base/STATUS.md.tmpl) | Live state: phase board, open decisions, handoff notes, changelog |
 | [templates/base/ROADMAP.md.tmpl](templates/base/ROADMAP.md.tmpl) | Gated phases, each with a kill criterion |
