@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 # bootstrap.sh — copy a playbook tier + stack into a target directory and fill
-# the placeholders. Dependencies: bash, coreutils, git. Idempotent: existing
+# the placeholders. Dependencies: bash 3.2+, coreutils, git. Idempotent: existing
 # files are never overwritten unless --force is given. --dry-run shows the plan.
 set -euo pipefail
+# bash >= 5.2 expands "&" in the replacement of ${var//pat/repl} to the matched
+# text, which mangles a name like "R&D Tool". Quoting the replacement avoids
+# that but inserts literal quotes on bash 3.2 (macOS), so switch the option off
+# where it exists instead.
+shopt -u patsub_replacement 2>/dev/null || true
 
 usage() {
   cat <<'EOF'
@@ -19,8 +24,8 @@ Options:
   --stack STACK        python | typescript | docs (default: docs)
   --agents FLAVOR      research | product (default: product for typescript,
                        research otherwise)
-  --github-user USER   GitHub handle for {{GITHUB_USER}} (default: git config
-                       github.user, else empty)
+  --github-user USER   GitHub handle; only used as the default for --holder
+                       (default: git config github.user, else empty)
   --holder NAME        {{COPYRIGHT_HOLDER}} (default: same as --github-user)
   --dry-run            print what would happen; write nothing
   --force              overwrite existing files
@@ -71,24 +76,40 @@ if [ -z "$GITHUB_USER" ]; then
 fi
 [ -n "$HOLDER" ] || HOLDER="$GITHUB_USER"
 YEAR="$(date +%Y)"
+# Python package names cannot contain hyphens or start with a digit.
+PKG="${SLUG//-/_}"
+case "$PKG" in [0-9]*) PKG="_$PKG" ;; esac
+
+escape_quoted() { # escape_quoted VALUE — make VALUE safe inside a JSON/TOML "string"
+  local v="$1"
+  v="${v//\\/\\\\}"
+  v="${v//\"/\\\"}"
+  printf '%s' "$v"
+}
 
 WROTE=0 SKIPPED=0
 
 render() { # render SRC DEST — fill placeholders, honor dry-run/force/idempotence
-  local src="$1" dest="$TARGET/$2" content
+  local src="$1" dest="$TARGET/$2" content name="$NAME" one_liner="$ONE_LINER" holder="$HOLDER"
   if [ -e "$dest" ] && [ "$FORCE" -ne 1 ]; then
     echo "skip   $2 (exists; use --force to overwrite)"
     SKIPPED=$((SKIPPED + 1))
     return 0
   fi
+  case "$2" in
+    *.json|*.toml) # free-text values land inside quoted strings in these files
+      name="$(escape_quoted "$NAME")"
+      one_liner="$(escape_quoted "$ONE_LINER")"
+      holder="$(escape_quoted "$HOLDER")"
+      ;;
+  esac
   content="$(cat "$src")"
-  content="${content//\{\{PROJECT_NAME\}\}/$NAME}"
+  content="${content//\{\{PROJECT_NAME\}\}/$name}"
   content="${content//\{\{PROJECT_SLUG\}\}/$SLUG}"
-  content="${content//\{\{ONE_LINER\}\}/$ONE_LINER}"
+  content="${content//\{\{PROJECT_PKG\}\}/$PKG}"
+  content="${content//\{\{ONE_LINER\}\}/$one_liner}"
   content="${content//\{\{YEAR\}\}/$YEAR}"
-  content="${content//\{\{GITHUB_USER\}\}/$GITHUB_USER}"
-  content="${content//\{\{STACK\}\}/$STACK}"
-  content="${content//\{\{COPYRIGHT_HOLDER\}\}/$HOLDER}"
+  content="${content//\{\{COPYRIGHT_HOLDER\}\}/$holder}"
   if [ "$DRY_RUN" -eq 1 ]; then
     echo "would  $2"
   else
@@ -140,6 +161,7 @@ if [ "$TIER" -ge 1 ]; then
       render "$TEMPLATES/stacks/python/Makefile.tmpl"             "Makefile"
       render "$TEMPLATES/stacks/python/tests/test_smoke.py.tmpl"  "tests/test_smoke.py"
       render "$TEMPLATES/base/env.example.tmpl"                   ".env.example"
+      render "$TEMPLATES/github/workflows/ci-python.yml"          ".github/workflows/ci.yml"
       append_gitignore "$TEMPLATES/stacks/python/gitignore.python" "# Python additions"
       ;;
     typescript)
@@ -148,6 +170,7 @@ if [ "$TIER" -ge 1 ]; then
       render "$TEMPLATES/stacks/typescript/eslint.config.js"  "eslint.config.js"
       render "$TEMPLATES/stacks/typescript/vitest.config.ts"  "vitest.config.ts"
       render "$TEMPLATES/base/env.example.tmpl"               ".env.example"
+      render "$TEMPLATES/github/workflows/ci-node.yml"        ".github/workflows/ci.yml"
       append_gitignore "$TEMPLATES/stacks/typescript/gitignore.node" "# Node/TypeScript additions"
       ;;
     docs)
@@ -161,18 +184,13 @@ fi
 if [ "$TIER" -ge 2 ]; then
   render "$TEMPLATES/github/PULL_REQUEST_TEMPLATE.md"  ".github/PULL_REQUEST_TEMPLATE.md"
   render "$TEMPLATES/github/ISSUE_TEMPLATE/task.md"    ".github/ISSUE_TEMPLATE/task.md"
-  case "$STACK" in
-    python)     render "$TEMPLATES/github/workflows/ci-python.yml" ".github/workflows/ci.yml" ;;
-    typescript) render "$TEMPLATES/github/workflows/ci-node.yml"   ".github/workflows/ci.yml" ;;
-    docs)       ;; # no CI for docs-only repos
-  esac
 fi
 
 echo "done: $WROTE written/planned, $SKIPPED skipped."
 if [ "$DRY_RUN" -eq 0 ]; then
   echo "next: fill remaining TODOs, pick ONE AGENTS.md flavor's optional sections,"
   echo "      then: cd $TARGET && git init && git add -A && git commit -m 'chore: bootstrap from repo-playbook'"
-  if [ -z "$GITHUB_USER" ]; then
-    echo "note: {{GITHUB_USER}}/{{COPYRIGHT_HOLDER}} were empty — grep for blanks in README/LICENSE."
+  if [ -z "$HOLDER" ]; then
+    echo "note: {{COPYRIGHT_HOLDER}} was empty — fill the blank in LICENSE (and pyproject.toml)."
   fi
 fi

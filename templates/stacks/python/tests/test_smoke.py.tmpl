@@ -7,11 +7,11 @@ import ast
 import importlib
 import pathlib
 
-SRC = pathlib.Path(__file__).resolve().parents[1] / "src" / "{{PROJECT_SLUG}}"
+SRC = pathlib.Path(__file__).resolve().parents[1] / "src" / "{{PROJECT_PKG}}"
 
 
 def test_package_imports() -> None:
-    importlib.import_module("{{PROJECT_SLUG}}")
+    importlib.import_module("{{PROJECT_PKG}}")
 
 
 def test_import_firewall() -> None:
@@ -21,7 +21,7 @@ def test_import_firewall() -> None:
     from a research/academic data module). Empty means no firewall yet.
     """
     forbidden: dict[str, set[str]] = {
-        # "execution": {"{{PROJECT_SLUG}}.data.academic"},
+        # "execution": {"{{PROJECT_PKG}}.data.academic"},
     }
     for subpackage, banned in forbidden.items():
         for path in (SRC / subpackage).rglob("*.py"):

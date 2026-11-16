@@ -94,10 +94,9 @@ Every `.tmpl` file uses these; `scripts/bootstrap.sh` fills them all.
 |-------------|---------|---------|
 | `{{PROJECT_NAME}}` | Human-readable name | `My Project` |
 | `{{PROJECT_SLUG}}` | kebab-case repo/package name | `my-project` |
+| `{{PROJECT_PKG}}` | snake_case Python package name, derived from the slug | `my_project` |
 | `{{ONE_LINER}}` | One-sentence description | `Watches X and reports Y.` |
 | `{{YEAR}}` | Current year | `2026` |
-| `{{GITHUB_USER}}` | GitHub handle | `hrustan` |
-| `{{STACK}}` | Stack chosen at bootstrap | `python` |
 | `{{COPYRIGHT_HOLDER}}` | Name on the LICENSE line | your name or handle |
 
 ## Proposed additions

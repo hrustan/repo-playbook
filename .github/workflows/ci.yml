@@ -28,6 +28,26 @@ jobs:
           # no placeholder may survive a render (workflow files legitimately
           # contain ${{ ... }}, so match the playbook's own {{NAME}} shape only)
           ! grep -rnE '\{\{[A-Z_]+\}\}' /tmp/probe
+      - name: awkward values survive a render
+        # "&" is special in bash >= 5.2 pattern substitution, and quotes and
+        # backslashes are special inside JSON/TOML strings.
+        run: |
+          for stack in python typescript; do
+            scripts/bootstrap.sh --target "/tmp/awk-$stack" --name 'R&D "Tool"' \
+              --one-liner 'Watches "X" & reports C:\tmp.' --tier 1 \
+              --stack "$stack" --github-user probe >/dev/null
+            head -1 "/tmp/awk-$stack/README.md" | grep -qxF '# R&D "Tool"'
+          done
+          python3 - <<'EOF'
+          import json, tomllib
+          want = 'Watches "X" & reports C:\\tmp.'
+          got = tomllib.load(open("/tmp/awk-python/pyproject.toml", "rb"))["project"]
+          assert got["description"] == want, got
+          assert got["name"] == "r-d-tool", got
+          got = json.load(open("/tmp/awk-typescript/package.json"))
+          assert got["description"] == want, got
+          print("ok")
+          EOF
       - name: workflow templates parse
         run: |
           python3 -m pip install --quiet pyyaml
