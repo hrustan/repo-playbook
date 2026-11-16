@@ -15,21 +15,35 @@ here; placeholders like `{{PROJECT_NAME}}` are intentional and must never be
    decide the kind (research or product) and the stack (python, typescript, or
    none) before copying; they are independent. Every repo gets the shared
    AGENTS.md, and `--kind research` appends the research rules to it.
-3. If copying by hand, fill every `{{...}}` placeholder; the full list is in the
+3. For a web app, browser extension, CLI, or any other framework project, run
+   the framework's own scaffolder first, then bootstrap on top with
+   `--stack none --check-cmd "<the project's gate command>"`. Do not write
+   framework boilerplate from memory.
+4. If copying by hand, fill every `{{...}}` placeholder; the full list is in the
    README. Grep for `{{` afterward to confirm none remain.
-4. For Tier 1+, delete any AGENTS.md template sections that don't apply. A lean
+5. For Tier 1+, delete any AGENTS.md template sections that don't apply. A lean
    AGENTS.md an agent actually reads beats a complete one nobody does.
 
 ## When asked to modify this repo
 
 - Templates stay **short**; explanation and rationale belong in `playbooks/`.
-- Anything added that wasn't observed in a real repo gets an inline
-  `<!-- proposed: not currently in my repos -->` marker and a row in the README's
-  "Proposed additions" section.
+- No template may tell an agent to append to a file that is read every session
+  (AGENTS.md, STATUS.md), or to add an entry per session, per PR, or per
+  decision anywhere. That wording is what made STATUS.md and ADR counts grow
+  without limit in real repos; see
+  [playbooks/01-doc-system.md](playbooks/01-doc-system.md).
+- A new file that agents read every session gets a limit in
+  `templates/scripts/check-docs.sh` in the same commit.
+- Anything added that wasn't observed in a real repo gets a row in the README's
+  "Proposed additions" section. Where the file format allows a comment, also
+  mark it inline with `<!-- proposed: not currently in my repos -->`; bootstrap
+  strips that line when it renders.
 - Every new template, checklist, or playbook gets an entry in the README template
   index **in the same commit**.
-- Templates must stay valid as-is: YAML and TOML must parse, shell must pass
-  shellcheck, markdown links must resolve.
+- Templates must stay valid as-is: YAML, TOML, and JSON must parse, shell must
+  pass shellcheck, markdown links must resolve. CI checks this and also runs a
+  generated repo's own gate for every kind × stack. Before committing a template
+  change, bootstrap into a scratch directory and run that gate locally.
 - Never put a real secret, email, or absolute path in any file here. Run
   [checklists/pre-publish-pii-sweep.md](checklists/pre-publish-pii-sweep.md) before
   any push that adds content.

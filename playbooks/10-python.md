@@ -1,8 +1,8 @@
-# Playbook 10 — Python research repo
+# Playbook 10 — Python stack
 
-For repos whose product is a *verdict*: validate a hypothesis, measure a system,
-kill ideas cheaply. The defining features are pre-registered gates, immutable
-decisions, and data hygiene.
+The tooling for `--stack python`, whatever the repo is for. Research-specific
+practice (pre-registered gates, data hygiene, experiment docs) is in
+[20-research.md](20-research.md).
 
 ## Stack
 
@@ -33,38 +33,9 @@ a test, and AGENTS.md names the test so no agent can claim ignorance.
   structural boundaries ("execution code never imports research data").
 - Rejection fixtures — if the repo can take a dangerous action (place an order,
   send an email), a test feeds it the forbidden inputs and asserts refusal.
-- Pre-registration enforcement — if results files exist, a test asserts the
-  registration fields were committed first.
 
 Mark these in AGENTS.md: "Do not weaken or skip. If a guardrail test blocks you,
 the code is wrong, not the test."
-
-## Data hygiene
-
-- `/data/` at the repo root, git-ignored **root-anchored** (leading slash) so a
-  source package like `src/<slug>/data/` stays tracked. `*.parquet` ignored
-  globally.
-- Commit *findings*, not dumps: a dated `docs/research/` note with counts and a
-  few representative records; the bulk JSON/parquet stays local or in CI
-  artifacts.
-- Scheduled captures that must persist go to an **orphan `data` branch**
-  (append-only, bot-committed) or to workflow artifacts with short retention —
-  never to `main`.
-- When a pull outgrows one machine, split it into a dedicated data repo (see the
-  escalation note in `templates/github/workflows/scheduled-job.yml`).
-
-## Docs
-
-Four trees, each with its own `_TEMPLATE` and numbering: `docs/adr/` (immutable
-decisions), `docs/research/` (numbered snapshots), `docs/runbooks/` (operator
-procedures), and optionally `experiments/NNNN_name/` with a
-pre-registration → results → verdict triad, where the verdict file is *not
-created* until the gate is earned.
-
-The README opens with an honest-framing section: what this is, what it is not,
-and the expected outcome distribution ("most ideas here will die; that is the
-point"). Optional house style some of my repos enforce: no em dashes in committed
-prose — adopt per-repo if you want it, it is not a default.
 
 ## Commit style
 

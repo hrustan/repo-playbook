@@ -22,6 +22,6 @@ promoting ended up with untested critical paths and READMEs frozen mid-handoff:
       recorded by the commits that made them.
 - [ ] Stack tooling from `templates/stacks/<stack>/`; tests for anything whose
       output you act on.
-- [ ] CI gate (`ci-node.yml` / `ci-python.yml`) the same day tests exist.
+- [ ] CI gate (`ci-node.yml` / `ci-python.yml` / `ci-docs.yml`) the same day.
 - [ ] `.env.example` if any secret has appeared.
 - [ ] Branch discipline starts now: `feat/<slug>`, PR, merge, delete.

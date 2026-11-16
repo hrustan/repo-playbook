@@ -1,6 +1,7 @@
-# Playbook 11 — TypeScript app
+# Playbook 11 — TypeScript stack
 
-For products: web apps, workers, extensions past the spike stage.
+The tooling for `--stack typescript`: a plain TypeScript package with lint,
+typecheck, and tests wired. For a framework project, see "Targets" below.
 
 ## Stack
 
@@ -25,6 +26,33 @@ For products: web apps, workers, extensions past the spike stage.
 - Scripts: `lint`, `typecheck`, `test`, and a `check` aggregate that chains all
   three — the local mirror of CI.
 - CI: `templates/github/workflows/ci-node.yml` from day one of having tests.
+
+## Targets: web app, worker, browser extension, CLI
+
+None of these is templated here, on purpose. A framework's scaffolder is always
+current and a copy frozen in this repo is not, so:
+
+1. Run the upstream scaffolder (`pnpm create vite`, `pnpm create next-app`,
+   `pnpm create cloudflare`, the extension framework's own, …).
+2. Layer the playbook on top:
+   `bootstrap.sh --stack none --check-cmd "pnpm check" …`. It adds the docs,
+   the docs gate, and the Claude Code settings, appends the secrets block to
+   the scaffolder's `.gitignore`, and lists the files it left alone.
+3. Port the opinions that matter by hand from `templates/stacks/typescript/`:
+   `noUncheckedIndexedAccess`, the `check` script that chains lint, typecheck,
+   test, and `check-docs`, and the CI workflow.
+
+What each target adds beyond that is small enough to state here:
+
+- **Web app** — client-exposed env variables carry the framework prefix and
+  server-only keys never do (see "Config").
+- **Worker** — side effects live in the worker entry; keep the logic in pure
+  modules so tests need no runtime.
+- **Browser extension** — store review is slow and repeats its objections; keep
+  `docs/publishing.md` current ([90-open-sourcing.md](90-open-sourcing.md) §5).
+
+A target earns a template of its own only after two real repos needed the same
+files.
 
 ## Monorepo variant
 

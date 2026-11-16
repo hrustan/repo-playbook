@@ -1,30 +1,35 @@
 # repo-playbook
 
-Reusable conventions, templates, and runbooks for starting a new repository —
-extracted from an audit of my real repos, not from best practices in the abstract.
-Every template here is something I have actually shipped at least once; the handful
-of net-new items are listed under [Proposed additions](#proposed-additions).
+Reusable conventions, templates, and runbooks for starting a new repository.
+The first version was extracted from an audit of my real repos, not from best
+practices in the abstract. This one is revised after using it, most of all where
+the first version's wording made STATUS.md and the ADR count grow without
+limit. Whatever has not yet run in a real repo is listed under
+[Proposed additions](#proposed-additions).
 
-The goal: any agent (human or AI) opening a repo built from this playbook can pick
-up the full context — current progress, blockers, open decisions, research, plans —
-from a handful of predictable files, in one read.
+The goal: any agent (human or AI) opening a repo built from this playbook can
+pick up where things stand — what is in flight, what is next, what needs the
+owner — from a handful of small, predictable files, in one short read.
 
 ## How to use it
 
-Two ways, interchangeable:
+```sh
+scripts/bootstrap.sh --target ../my-project --name "My Project" \
+  --one-liner "What it does in one sentence" --tier 1 --kind product --stack python
+```
 
-1. **GitHub template repo** — click *Use this template*, then delete the tiers you
-   don't need and fill the placeholders.
-2. **Bootstrap script** — copy a tier + stack into a target directory:
+Three independent choices:
 
-   ```sh
-   scripts/bootstrap.sh --target ../my-project --name "My Project" \
-     --one-liner "What it does in one sentence" --tier 1 --kind product --stack python
-   ```
+| Flag | Values | Decides |
+|------|--------|---------|
+| `--tier` | `0` spike · `1` project · `2` public | how much ceremony |
+| `--kind` | `product` · `research` | the rules: research adds pre-registered gates, kill criteria, data hygiene |
+| `--stack` | `python` · `typescript` · `none` | the tooling and CI |
 
-   Supports `--dry-run` (show what would happen) and `--force` (overwrite existing
-   files; without it, existing files are always left alone). Run with `--help` for
-   all flags.
+There is no flavor per framework. For a web app, a browser extension, or a CLI,
+run the framework's own scaffolder, then bootstrap on top with `--stack none`.
+The script never overwrites a file without `--force`, appends to shared files
+at most once, and supports `--dry-run`. Run it with `--help` for all flags.
 
 Start with [playbooks/00-new-project.md](playbooks/00-new-project.md) — it walks the
 day-zero steps in order and tells you which tier you need.
@@ -36,7 +41,7 @@ Ceremony scales with maturity. Don't give a spike the furniture of a product.
 | Tier | For | Gets |
 |------|-----|------|
 | **0 — spike** | throwaway experiments, one-shot tools, flat script repos | `README.md`, minimal `.gitignore`, `LICENSE`. Nothing else. Trunk-only. |
-| **1 — project** | anything getting a second session of work or a first real decision | Tier 0 + `AGENTS.md`, `STATUS.md`, `ROADMAP.md`, `docs/adr/`, `.env.example`, stack tooling, tests, CI gate |
+| **1 — project** | anything getting a second session of work or a first real decision | Tier 0 + `AGENTS.md`, `CLAUDE.md`, `STATUS.md`, `ROADMAP.md`, `docs/adr/`, the docs gate, `.claude/settings.json`, CI; with a code stack also tooling, a seed test, `.env.example` |
 | **2 — public** | anything a stranger will read | Tier 1 + README rewritten for strangers, PII sweep, issue/PR templates, pruned branches |
 
 Promotion triggers are in [checklists/tier-promotion.md](checklists/tier-promotion.md).
@@ -72,7 +77,7 @@ Four root files with strict, non-overlapping roles:
 | Path | What it is |
 |------|-----------|
 | [templates/base/README.md.tmpl](templates/base/README.md.tmpl) | README every repo gets: name, one-liner, quickstart |
-| [templates/base/README.tier1.md.tmpl](templates/base/README.tier1.md.tmpl) | Map block appended to the README at Tier 1 (start-here links, doc index) |
+| [templates/base/README.tier1.md.tmpl](templates/base/README.tier1.md.tmpl) | Map block appended to the README at Tier 1: one row per root doc and doc tree |
 | [templates/base/AGENTS.md.tmpl](templates/base/AGENTS.md.tmpl) | Agent rules every repo gets (session loop, Definition of Done) |
 | [templates/base/AGENTS.research.md.tmpl](templates/base/AGENTS.research.md.tmpl) | Research rules appended to AGENTS.md (mission, pre-registered gates, data hygiene) |
 | [templates/base/CLAUDE.md.tmpl](templates/base/CLAUDE.md.tmpl) | One-line `@AGENTS.md` import, so Claude Code loads the shared rules |
@@ -98,11 +103,11 @@ Four root files with strict, non-overlapping roles:
 | [templates/stacks/python/](templates/stacks/python/) | pyproject, uv-driven Makefile, package seed, guardrail smoke test, gitignore |
 | [templates/stacks/typescript/](templates/stacks/typescript/) | strict tsconfig, flat ESLint, vitest config, package scripts, seed source and smoke test, gitignore |
 | [checklists/](checklists/) | new-repo, tier-promotion, pre-publish PII sweep, archive-repo |
-| [playbooks/](playbooks/) | The long-form how-and-why for each stack |
+| [playbooks/](playbooks/) | The long-form how-and-why: day zero (00), the doc system (01), one per stack (10–12), research (20), open-sourcing (90) |
 
 ## Placeholders
 
-Every `.tmpl` file uses these; `scripts/bootstrap.sh` fills them all.
+`scripts/bootstrap.sh` fills these wherever they appear.
 
 | Placeholder | Meaning | Example |
 |-------------|---------|---------|
@@ -116,17 +121,32 @@ Every `.tmpl` file uses these; `scripts/bootstrap.sh` fills them all.
 
 ## Proposed additions
 
-Items marked `<!-- proposed: not currently in my repos -->` were not observed in the
-audited repos; they fill gaps the audit surfaced. Adopt or delete deliberately:
+Everything below has not yet run in one of my real repos. This list is the
+register; where a file format allows a comment the item is also marked inline
+with `<!-- proposed: not currently in my repos -->`, which bootstrap strips when
+it renders. Adopt or delete deliberately:
 
-- `templates/base/CLAUDE.md.tmpl` — the `@AGENTS.md` import, so Claude Code loads AGENTS.md
-- `templates/claude/settings.json` — the Claude Code layer over the docs gate and
-  the ADR gate (JSON cannot carry an inline marker, so this row is its only one)
-- `templates/github/workflows/ci-python.yml` — the Python CI gate none of my Python repos had
-- `checklists/tier-promotion.md` — explicit spike→project triggers
+- The snapshot shape of `STATUS.md` and the owner gate on ADRs. Both replace
+  shapes that *were* observed, and that failed in use.
 - `templates/scripts/check-docs.sh` and `templates/github/workflows/ci-docs.yml` —
-  the docs gate, added after STATUS.md and ADR counts grew without limit in real use
-- the `uv` workflow (`uv sync`, `uv run`, committed `uv.lock`) in the Python stack and [playbooks/10-python-research.md](playbooks/10-python-research.md)
+  the docs gate that enforces the limits
+- `templates/claude/settings.json` — the Claude Code layer over the docs gate and
+  the ADR gate
+- `templates/base/CLAUDE.md.tmpl` — the `@AGENTS.md` import, so Claude Code loads AGENTS.md
+- One shared `AGENTS.md.tmpl` with a research addendum, in place of two flavors;
+  `--kind` and `--stack` as independent choices; layering onto a scaffolded repo
+- `templates/github/workflows/ci-python.yml` — the Python CI gate none of my Python repos had
+- The `uv` workflow (`uv sync`, `uv run`, committed `uv.lock`) in the Python
+  stack and [playbooks/10-python.md](playbooks/10-python.md)
+- `checklists/tier-promotion.md` — explicit spike→project triggers
+
+## Keeping it current
+
+The playbook's own CI bootstraps a repo for every kind × stack and runs that
+repo's real gate, on every change and weekly, so a stale version pin fails here
+and not in the next new project. Dependabot watches the action pins. GitHub
+pauses scheduled workflows after 60 days without activity; if this repo has
+been quiet, run the CI workflow by hand before starting a project.
 
 ## License
 
