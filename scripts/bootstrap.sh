@@ -159,6 +159,7 @@ if [ "$TIER" -ge 1 ]; then
     python)
       render "$TEMPLATES/stacks/python/pyproject.toml.tmpl"       "pyproject.toml"
       render "$TEMPLATES/stacks/python/Makefile.tmpl"             "Makefile"
+      render "$TEMPLATES/stacks/python/src/__init__.py"           "src/$PKG/__init__.py"
       render "$TEMPLATES/stacks/python/tests/test_smoke.py.tmpl"  "tests/test_smoke.py"
       render "$TEMPLATES/base/env.example.tmpl"                   ".env.example"
       render "$TEMPLATES/github/workflows/ci-python.yml"          ".github/workflows/ci.yml"
@@ -169,6 +170,8 @@ if [ "$TIER" -ge 1 ]; then
       render "$TEMPLATES/stacks/typescript/tsconfig.json"     "tsconfig.json"
       render "$TEMPLATES/stacks/typescript/eslint.config.js"  "eslint.config.js"
       render "$TEMPLATES/stacks/typescript/vitest.config.ts"  "vitest.config.ts"
+      render "$TEMPLATES/stacks/typescript/src/index.ts"      "src/index.ts"
+      render "$TEMPLATES/stacks/typescript/tests/smoke.test.ts" "tests/smoke.test.ts"
       render "$TEMPLATES/base/env.example.tmpl"               ".env.example"
       render "$TEMPLATES/github/workflows/ci-node.yml"        ".github/workflows/ci.yml"
       append_gitignore "$TEMPLATES/stacks/typescript/gitignore.node" "# Node/TypeScript additions"
@@ -188,8 +191,12 @@ fi
 
 echo "done: $WROTE written/planned, $SKIPPED skipped."
 if [ "$DRY_RUN" -eq 0 ]; then
-  echo "next: fill remaining TODOs, pick ONE AGENTS.md flavor's optional sections,"
-  echo "      then: cd $TARGET && git init && git add -A && git commit -m 'chore: bootstrap from repo-playbook'"
+  echo "next: fill the remaining TODO slots, then:"
+  echo "      cd $TARGET && git init"
+  if [ "$TIER" -ge 1 ] && [ "$STACK" = "typescript" ]; then
+    echo "      pnpm install && pnpm check   # writes pnpm-lock.yaml; commit it, CI installs frozen"
+  fi
+  echo "      git add -A && git commit -m 'chore: bootstrap from repo-playbook'"
   if [ -z "$HOLDER" ]; then
     echo "note: {{COPYRIGHT_HOLDER}} was empty — fill the blank in LICENSE (and pyproject.toml)."
   fi
