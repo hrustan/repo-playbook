@@ -67,4 +67,5 @@ Or copy files by hand and fill every `{{...}}` placeholder (grep for `{{` after)
 - Trunk-only for Tier 0. Tier 1+: branch `feat/<kebab-slug>` (or
   `phase-N/<slug>`), PR, merge, delete the branch.
 - Enforcement is CI plus the PR checklist — not git hooks. CI includes the docs
-  gate, `scripts/check-docs.sh`, at every tier from 1 up.
+  gate, `scripts/check-docs.sh`, at every tier from 1 up. Claude Code sessions
+  also get it after every edit, through the hook in `.claude/settings.json`.

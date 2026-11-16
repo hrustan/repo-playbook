@@ -75,7 +75,8 @@ Four root files with strict, non-overlapping roles:
 | [templates/base/README.tier1.md.tmpl](templates/base/README.tier1.md.tmpl) | Map block appended to the README at Tier 1 (start-here links, doc index) |
 | [templates/base/AGENTS.md.tmpl](templates/base/AGENTS.md.tmpl) | Agent rules every repo gets (session loop, Definition of Done) |
 | [templates/base/AGENTS.research.md.tmpl](templates/base/AGENTS.research.md.tmpl) | Research rules appended to AGENTS.md (mission, pre-registered gates, data hygiene) |
-| [templates/base/CLAUDE.md.tmpl](templates/base/CLAUDE.md.tmpl) | Two-line shim for tools that only read CLAUDE.md |
+| [templates/base/CLAUDE.md.tmpl](templates/base/CLAUDE.md.tmpl) | One-line `@AGENTS.md` import, so Claude Code loads the shared rules |
+| [templates/claude/settings.json](templates/claude/settings.json) | Shared Claude Code settings: docs-gate hook, ask rules on ADRs and the rulebook, deny rules on `.env` |
 | [templates/base/STATUS.md.tmpl](templates/base/STATUS.md.tmpl) | Snapshot of now: in flight, next, needs owner, watch out |
 | [templates/base/ROADMAP.md.tmpl](templates/base/ROADMAP.md.tmpl) | Forward-only gated phases, each with a kill criterion |
 | [templates/base/gitignore.base](templates/base/gitignore.base) | Commented, policy-citing ignore skeleton |
@@ -118,7 +119,9 @@ Every `.tmpl` file uses these; `scripts/bootstrap.sh` fills them all.
 Items marked `<!-- proposed: not currently in my repos -->` were not observed in the
 audited repos; they fill gaps the audit surfaced. Adopt or delete deliberately:
 
-- `templates/base/CLAUDE.md.tmpl` — shim so CLAUDE.md-only tools find AGENTS.md
+- `templates/base/CLAUDE.md.tmpl` — the `@AGENTS.md` import, so Claude Code loads AGENTS.md
+- `templates/claude/settings.json` — the Claude Code layer over the docs gate and
+  the ADR gate (JSON cannot carry an inline marker, so this row is its only one)
 - `templates/github/workflows/ci-python.yml` — the Python CI gate none of my Python repos had
 - `checklists/tier-promotion.md` — explicit spike→project triggers
 - `templates/scripts/check-docs.sh` and `templates/github/workflows/ci-docs.yml` —

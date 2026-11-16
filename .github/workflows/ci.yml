@@ -144,6 +144,15 @@ jobs:
           if bash scripts/check-docs.sh; then echo "a stray root doc passed"; exit 1; fi
           rm NOTES.md
           bash scripts/check-docs.sh
+      - name: shared Claude settings are tracked; personal files and secrets are not
+        working-directory: gen
+        run: |
+          if git check-ignore -q .claude/settings.json; then echo "settings.json is ignored"; exit 1; fi
+          if git check-ignore -q .env.example; then echo ".env.example is ignored"; exit 1; fi
+          git check-ignore -q .claude/settings.local.json
+          git check-ignore -q CLAUDE.local.md
+          git check-ignore -q .env
+          grep -qxF '@AGENTS.md' CLAUDE.md
 
       - if: matrix.stack == 'typescript'
         uses: pnpm/action-setup@v6

@@ -105,6 +105,44 @@ It runs in CI for every stack, including docs-only repos, and in the local gate
 (`make check`, `pnpm check`). Raising a limit or allowing another root doc is
 the owner's decision, made by editing the script.
 
+## The Claude Code layer
+
+Everything above works for any agent. Claude Code gets one extra file,
+`.claude/settings.json`, committed so every session on every machine has it:
+
+- **A hook that runs the docs gate after every edit.** CI catches an oversized
+  STATUS.md at PR time; the hook reports it to the agent in the session that
+  caused it, when the fix is cheapest. It exits 2 on failure, which is what
+  sends the message to Claude and not only to the transcript.
+- **Ask rules** on `docs/adr/`, `AGENTS.md`, `scripts/check-docs.sh`, and the
+  settings file itself. Writing an ADR, changing the rules, or raising a limit
+  prompts the owner, including in auto mode. That click is the approval the ADR
+  gate asks for. In an unattended run nobody can answer the prompt, so there the
+  AGENTS.md wording and CI are what hold.
+- **Deny rules** on reading `.env` files, with `.env.example` carved back out.
+
+`CLAUDE.md` is the single line `@AGENTS.md`. When a repo has both files, Claude
+Code reads only CLAUDE.md, and a CLAUDE.md that tells Claude in prose to go and
+read AGENTS.md leaves it to the model to open the file. The import loads it
+every session.
+
+STATUS.md is deliberately not imported. An import is expanded in full at launch
+and sent with every request, so an oversized file would cost its whole size on
+every turn. Read on demand, it is capped by the Read tool, and the session loop
+in AGENTS.md already says to read it first. For the same reason, never write an
+`@` path to STATUS.md or to anything under `docs/` in AGENTS.md or CLAUDE.md:
+outside backticks, that is an import.
+
+When AGENTS.md nears its limit, or after a major model release, run `/doctor`,
+which trims what Claude can derive from the code, and `/doctor prompt-audit`,
+which flags stale and contradictory instructions.
+
+Sources, as of 2026-11: the Claude Code docs on
+[memory and CLAUDE.md](https://code.claude.com/docs/en/memory),
+[hooks](https://code.claude.com/docs/en/hooks),
+[permissions](https://code.claude.com/docs/en/permissions), and
+[best practices](https://code.claude.com/docs/en/best-practices).
+
 ## When a limit is hit
 
 Delete. The usual candidates, in order: finished items still listed under Now,

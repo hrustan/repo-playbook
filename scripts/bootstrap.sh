@@ -187,6 +187,7 @@ if [ "$TIER" -ge 1 ]; then
     render "$TEMPLATES/docs/research/README.md"        "docs/research/README.md"
   fi
   render "$TEMPLATES/base/CLAUDE.md.tmpl"         "CLAUDE.md"
+  render "$TEMPLATES/claude/settings.json"        ".claude/settings.json"
   render "$TEMPLATES/base/STATUS.md.tmpl"         "STATUS.md"
   render "$TEMPLATES/base/ROADMAP.md.tmpl"        "ROADMAP.md"
   render "$TEMPLATES/docs/adr/0000-template.md"   "docs/adr/0000-template.md"

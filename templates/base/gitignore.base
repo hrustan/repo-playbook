@@ -13,6 +13,8 @@
 # directory named data/ deeper in the tree stays tracked.
 /data/
 
-# Agent tooling (machine-local; permission allowlists accrete per session)
-.claude/settings.json
+# Agent tooling: only the personal, machine-local files. .claude/settings.json
+# is shared and committed on purpose; it carries the docs-gate hook and the
+# permission rules.
 .claude/settings.local.json
+CLAUDE.local.md
